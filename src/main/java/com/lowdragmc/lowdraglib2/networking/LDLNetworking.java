@@ -31,7 +31,8 @@ public class LDLNetworking {
         // S2C
         PayloadTypeRegistry.playS2C().register(SPacketAutoSyncBlockEntity.TYPE, SPacketAutoSyncBlockEntity.CODEC);
 
-        // C2S
+        // Bidirectional (upstream playBidirectional)
+        PayloadTypeRegistry.playS2C().register(PacketUIRPCEvent.TYPE, PacketUIRPCEvent.CODEC);
         PayloadTypeRegistry.playC2S().register(PacketUIRPCEvent.TYPE, PacketUIRPCEvent.CODEC);
 
         // Bidirectional (registering both registries, matching upstream playBidirectional)
