@@ -29,7 +29,13 @@ public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializabl
     }
 
     public void setSize(int size) {
-        stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+        if (size < stacks.size()) {
+            stacks.subList(size, stacks.size()).clear();
+        } else {
+            while (stacks.size() < size) {
+                stacks.add(ItemStack.EMPTY);
+            }
+        }
     }
 
     @Override
@@ -56,6 +62,7 @@ public class ItemStackHandler implements IItemHandlerModifiable, INBTSerializabl
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (stack.isEmpty()) return ItemStack.EMPTY;
         validateSlotIndex(slot);
+        if (!isItemValid(slot, stack)) return stack;
         ItemStack existing = stacks.get(slot);
         int limit = getStackLimit(slot, stack);
 
