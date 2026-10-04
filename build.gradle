@@ -17,6 +17,8 @@ base {
 }
 
 repositories {
+    // maven-central mirror: repo.maven.apache.org is rate-limited (429) from this network
+    maven { url = 'https://maven.aliyun.com/repository/central' }
     mavenCentral()
     mavenLocal()
     maven { url = "https://maven.parchmentmc.org" } // Parchment mappings

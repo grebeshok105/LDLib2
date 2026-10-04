@@ -945,7 +945,7 @@ public class ModularUI {
         if (this.debugMode == debugMode) return;
         this.debugMode = debugMode;
         if (debugMode) {
-            Minecraft.getInstance().pushGuiLayer(new DebugScreen(acquireDebugger()));
+            Minecraft.getInstance().setScreen(new DebugScreen(acquireDebugger()));
         } else {
             // Both hosts, because either could be the one showing it. Leaving the other open would
             // put a debugger on screen that its own target no longer believes in.
@@ -966,7 +966,7 @@ public class ModularUI {
     private void dismissDebugScreen() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.screen instanceof DebugScreen debugScreen && debugScreen.uiDebugger == uiDebuggerCache) {
-            minecraft.popGuiLayer();
+            minecraft.setScreen(null);
         }
     }
 
@@ -995,7 +995,7 @@ public class ModularUI {
             if (!UIDebuggerWindow.openFor(uiDebuggerCache)) return;
             dismissDebugScreen();
         } else {
-            minecraft.pushGuiLayer(new DebugScreen(uiDebuggerCache));
+            minecraft.setScreen(new DebugScreen(uiDebuggerCache));
             var window = UIDebuggerWindow.windowFor(this);
             if (window != null) {
                 window.handOff();

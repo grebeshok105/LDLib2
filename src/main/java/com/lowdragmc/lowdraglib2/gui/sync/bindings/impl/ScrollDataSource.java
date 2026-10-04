@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 
 @Data(staticConstructor = "of")
 @KJSBindings

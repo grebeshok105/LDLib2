@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Consumer;
+import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 
 /**
  * The {@code TreeBuilder} class provides an API for constructing and managing a hierarchical tree structure

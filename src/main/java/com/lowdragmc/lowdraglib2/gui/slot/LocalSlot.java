@@ -3,6 +3,7 @@ package com.lowdragmc.lowdraglib2.gui.slot;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 
 /**
  * A slot that never belongs to a menu, backing UI elements that only display a stack.

@@ -1,5 +1,8 @@
 package com.lowdragmc.lowdraglib2.gui.ui.window;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 
 /**
  * A window rectangle in virtual-screen pixels — the space {@code glfwSetWindowPos} and
@@ -21,5 +24,3 @@ public record WindowBounds(int x, int y, int width, int height) {
         return new WindowBounds(x + dx, y + dy, width, height);
     }
 }
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;

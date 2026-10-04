@@ -30,6 +30,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * Records the steps of a {@link UIScenario}.
@@ -42,7 +44,7 @@ import java.util.function.Predicate;
  * hover, drag state and layout are only recomputed while rendering: a click issued in the same frame
  * as the cursor move would resolve against the previous hover and silently do nothing.
  *
- * <p>Deliberately <b>not</b> {@code @OnlyIn(Dist.CLIENT)} even though this is a client API: a
+ * <p>Deliberately <b>not</b> {@code @Environment(EnvType.CLIENT)} even though this is a client API: a
  * {@link com.lowdragmc.lowdraglib2.uitest.mp.MPScenario} class carries {@code Consumer<ScenarioBuilder>}
  * lambdas in its synthetic method signatures, and linking that class on the dedicated-server process
  * must be able to <em>load</em> this one. It is never linked there — client blocks only execute on

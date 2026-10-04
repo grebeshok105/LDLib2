@@ -71,7 +71,13 @@ public class Platform {
     }
 
     public static boolean isDevEnv() {
-        return FabricLoader.getInstance().isDevelopmentEnvironment();
+        // Plain JVM contexts (unit tests) have no fabric launcher; like upstream's
+        // !FMLEnvironment.production there, they count as a development environment.
+        try {
+            return FabricLoader.getInstance().isDevelopmentEnvironment();
+        } catch (Throwable t) {
+            return true;
+        }
     }
 
 
@@ -81,11 +87,21 @@ public class Platform {
     }
 
     public static boolean isModLoaded(String modId) {
-        return FabricLoader.getInstance().isModLoaded(modId);
+        try {
+            return FabricLoader.getInstance().isModLoaded(modId);
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     public static boolean isClient() {
-        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+        // Without a launcher (plain JUnit) behave as non-client, matching upstream where
+        // FMLEnvironment.dist is simply not CLIENT.
+        try {
+            return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     public static MinecraftServer getMinecraftServer() {

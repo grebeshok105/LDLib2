@@ -267,7 +267,7 @@ public class CodeEditor extends TextArea {
      * the rendered text even when segments are bold.
      */
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected Component styledLineComponent(int line, int from, int to) {
         var styled = getStyledLines();
         if (line < 0 || line >= styled.size()) {

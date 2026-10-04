@@ -23,8 +23,7 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
 import com.lowdragmc.lowdraglib2.editor.resource.PackResourceManager;
@@ -104,12 +103,12 @@ public class ClientProxy {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(LDFontManager.INSTANCE);
 
         /**
-         * TEMPORARY: development readout, see {@link LDFontStatsOverlay}. Registered after {@link
-         * IdentifiedLayer#SLEEP} so it sits above the rest of the HUD, matching the NeoForge aboveAll layer.
+         * TEMPORARY: development readout, see {@link LDFontStatsOverlay}. HudRenderCallback draws
+         * after the rest of the HUD, matching the NeoForge aboveAll layer.
          */
-        HudLayerRegistrationCallback.EVENT.register(layeredDraw -> {
+        HudRenderCallback.EVENT.register((graphics, tickDelta) -> {
             if (Platform.isDevEnv()) {
-                layeredDraw.attachLayerAfter(IdentifiedLayer.SLEEP, LDLib2.id("font_stats"), LDFontStatsOverlay.INSTANCE);
+                LDFontStatsOverlay.INSTANCE.render(graphics, tickDelta);
             }
         });
 
@@ -133,7 +132,7 @@ public class ClientProxy {
         }
         IRendererResource.INSTANCE.onAdditionalModel(mrl -> event.addModels(mrl.id()));
         for (IRenderer renderer : IRenderer.EVENT_REGISTERS) {
-            renderer.onAdditionalModel(event::addModels);
+            renderer.onAdditionalModel(mrl -> event.addModels(mrl.id()));
         }
     }
 

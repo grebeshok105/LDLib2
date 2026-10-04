@@ -1,5 +1,8 @@
 package com.lowdragmc.lowdraglib2.client.window;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 
 /**
  * Whatever fills an {@link OsWindow}. {@link OsWindowManager} drives one of these per frame in the
@@ -47,5 +50,3 @@ public interface OsWindowHost {
     default void onDestroyed() {
     }
 }
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;

@@ -36,8 +36,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.utils.KeyState;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import dev.vfyjxf.taffy.style.*;
 import dev.vfyjxf.taffy.tree.Layout;
 import dev.vfyjxf.taffy.tree.NodeId;
@@ -1657,7 +1655,6 @@ public class UIElement implements IConfigurable, IPersistedSerializable, ILDLReg
      * @param handler the function to handle the message, which receives a CompoundTag as its input
      * @return the current instance of UIElement
      */
-    @HideFromJS
     public UIElement onMessage(String name, Consumer<CompoundTag> handler) {
         getOrCreateMessageRPC();
         messageHandlers.computeIfAbsent(name, k -> new ArrayList<>()).add(handler);
@@ -1674,7 +1671,6 @@ public class UIElement implements IConfigurable, IPersistedSerializable, ILDLReg
      *                and the {@code CompoundTag} payload that represents the message data
      * @return the current {@code UIElement}, allowing for method chaining
      */
-    @HideFromJS
     public UIElement onMessage(String name, BiConsumer<UIElement, CompoundTag> handler) {
         return onMessage(name, (payload) -> handler.accept(this, payload));
     }

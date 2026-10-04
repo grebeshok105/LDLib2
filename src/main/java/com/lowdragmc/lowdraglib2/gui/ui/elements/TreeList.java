@@ -845,7 +845,7 @@ public class TreeList<NODE extends ITreeNode<?, ?>> extends UIElement {
         return IGuiTexture.EMPTY;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static IGuiTexture createDraggingOverlay(DropMode mode, boolean valid) {
         int color = valid ? ColorPattern.T_WHITE.color : ColorPattern.T_BRIGHT_RED.color;
         return switch (mode) {

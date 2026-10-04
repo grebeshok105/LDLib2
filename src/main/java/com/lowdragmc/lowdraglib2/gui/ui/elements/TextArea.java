@@ -528,7 +528,7 @@ public class TextArea extends BindableUIElement<String[]> {
      * the rendered text, including style-dependent advances such as bold. Subclasses that render styled text
      * (e.g. syntax highlighting) should override this to reflect that styling.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected Component styledLineComponent(int line, int from, int to) {
         var text = lines.get(line);
         from = Mth.clamp(from, 0, text.length());

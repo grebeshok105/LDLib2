@@ -47,7 +47,7 @@ public class LDLib2Registries {
      *
      * @see com.lowdragmc.lowdraglib2.uitest.UIScenario
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static AutoRegistry.LDLibRegisterClient<UIScenario, Supplier<UIScenario>> UI_SCENARIOS;
 
     /**

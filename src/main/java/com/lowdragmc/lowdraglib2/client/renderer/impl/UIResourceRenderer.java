@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -80,7 +81,7 @@ public class UIResourceRenderer implements IRenderer {
     }
 
     @Override
-    public void onAdditionalModel(Consumer<ResourceLocation> registry) {
+    public void onAdditionalModel(Consumer<ModelResourceLocation> registry) {
         getInternalRenderer().onAdditionalModel(registry);
     }
 

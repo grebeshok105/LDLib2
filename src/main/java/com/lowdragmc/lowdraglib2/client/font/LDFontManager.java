@@ -24,7 +24,7 @@ import net.minecraft.client.gui.font.providers.TrueTypeGlyphProviderDefinition;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -53,7 +53,13 @@ import java.util.function.Function;
  * </ul>
  */
 @Environment(EnvType.CLIENT)
-public class LDFontManager implements Function<ResourceLocation, FontSet>, ResourceManagerReloadListener {
+public class LDFontManager implements Function<ResourceLocation, FontSet>, SimpleSynchronousResourceReloadListener {
+
+    @Override
+    public ResourceLocation getFabricId() {
+        return LDLib2.id("font_manager");
+    }
+
     public static final LDFontManager INSTANCE = new LDFontManager();
 
     private static final FileToIdConverter FONT_DEFINITIONS = FileToIdConverter.json("font");

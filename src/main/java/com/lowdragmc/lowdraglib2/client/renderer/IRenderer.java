@@ -36,6 +36,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,6 +56,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public interface IRenderer extends ILDLRegisterClient<IRenderer, Supplier<IRenderer>>, IConfigurable, IPersistedSerializable {
     //region builtin renderer
@@ -129,11 +132,11 @@ public interface IRenderer extends ILDLRegisterClient<IRenderer, Supplier<IRende
     /**
      * Register additional models here.
      */
-    default void onAdditionalModel(Consumer<ResourceLocation> registry) {
+    default void onAdditionalModel(Consumer<ModelResourceLocation> registry) {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     default void clearCache() {
 
     }

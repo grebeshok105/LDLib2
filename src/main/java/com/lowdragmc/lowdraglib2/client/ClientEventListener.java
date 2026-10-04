@@ -48,13 +48,14 @@ public class ClientEventListener {
          * than over it, so on a screen it would sit behind the very interface it is reporting on. Drawing it again
          * here puts it on top. See {@link LDFontStatsOverlay}.
          */
-        ScreenEvents.AFTER_RENDER.register((screen, graphics, mouseX, mouseY, tickDelta) -> {
-            if (Platform.isDevEnv()) {
-                LDFontStatsOverlay.INSTANCE.render(graphics, Minecraft.getInstance().getTimer());
-            }
-            // Only draws while something is driving the cursor from inside the process; see the class doc.
-            CursorOverlay.render(graphics, tickDelta);
-        });
+        ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) ->
+                ScreenEvents.afterRender(screen).register((s, graphics, mouseX, mouseY, tickDelta) -> {
+                    if (Platform.isDevEnv()) {
+                        LDFontStatsOverlay.INSTANCE.render(graphics, Minecraft.getInstance().getTimer());
+                    }
+                    // Only draws while something is driving the cursor from inside the process; see the class doc.
+                    CursorOverlay.render(graphics, tickDelta);
+                }));
     }
 
     public static void init() {

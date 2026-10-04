@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @LDLRegisterClient(name = "renderer_group", registry = "ldlib2:renderer")
 public class RendererGroup implements IRenderer {
@@ -58,7 +60,7 @@ public class RendererGroup implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         for (IRenderer renderer : renderers) {
             renderer.onPrepareTextureAtlas(atlasName, register);
@@ -66,7 +68,7 @@ public class RendererGroup implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void onAdditionalModel(Consumer<ModelResourceLocation> registry) {
         for (IRenderer renderer : renderers) {
             renderer.onAdditionalModel(registry);
@@ -74,7 +76,7 @@ public class RendererGroup implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clearCache() {
         for (IRenderer renderer : renderers) {
             renderer.clearCache();

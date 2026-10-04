@@ -436,18 +436,6 @@ public class AccessorRegistries {
                 .codec(Ingredient.CODEC)
                 .streamCodec(Ingredient.CONTENTS_STREAM_CODEC)
                 .build());
-        registerAccessor(CustomDirectAccessor.builder(FluidIngredient.class)
-                .codec(FluidIngredient.CODEC)
-                .streamCodec(FluidIngredient.STREAM_CODEC)
-                .build());
-        registerAccessor(CustomDirectAccessor.builder(SizedIngredient.class)
-                .codec(SizedIngredient.FLAT_CODEC)
-                .streamCodec(SizedIngredient.STREAM_CODEC)
-                .build());
-        registerAccessor(CustomDirectAccessor.builder(SizedFluidIngredient.class)
-                .codec(SizedFluidIngredient.FLAT_CODEC)
-                .streamCodec(SizedFluidIngredient.STREAM_CODEC)
-                .build());
 
         setPriority(1500);
 

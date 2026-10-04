@@ -105,7 +105,7 @@ public class TestSync implements IMenuTest {
                         // execute from client
                         assert (LDLib2.isRemote());
                         // fabric: vanilla Fluid has no getFluidType(); use the source block description
-                        button.setText(fluid.defaultFluidState().createLegacyBlock().getBlock().getDescription());
+                        button.setText(fluid.defaultFluidState().createLegacyBlock().getBlock().getName());
                     }));
                     button.addServerEventListener(UIEvents.MOUSE_DOWN, e -> {
                         if (fluidTank.getFluid().getFluid() == Fluids.WATER) {

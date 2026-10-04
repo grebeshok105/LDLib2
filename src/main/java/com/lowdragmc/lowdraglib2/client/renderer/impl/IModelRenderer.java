@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -107,7 +108,7 @@ public class IModelRenderer implements IRenderer {
             synchronized (this) {
                 if (!unbakedModelInitialized) {
                     // fast path: models registered through the RegisterAdditional pipeline
-                    var model = ModelFactory.getTopLevelModel(ModelResourceLocation.standalone(modelLocation));
+                    var model = ModelFactory.getTopLevelModel(new ModelResourceLocation(modelLocation, "standalone"));
                     if (model == null) {
                         // renderer created after the initial reload: dynamically load & resolve
                         // the model under the bakery lock (see ModelFactory#loadUnbakedModelDynamically)
@@ -123,7 +124,7 @@ public class IModelRenderer implements IRenderer {
 
     @Environment(EnvType.CLIENT)
     protected boolean isTopLevelModelMissing() {
-        return ModelFactory.getTopLevelModel(ModelResourceLocation.standalone(modelLocation)) == null;
+        return ModelFactory.getTopLevelModel(new ModelResourceLocation(modelLocation, "standalone")) == null;
     }
 
     @Override
@@ -227,8 +228,8 @@ public class IModelRenderer implements IRenderer {
     }
     
     @Override
-    public void onAdditionalModel(Consumer<ResourceLocation> registry) {
-        registry.accept(modelLocation);
+    public void onAdditionalModel(Consumer<ModelResourceLocation> registry) {
+        registry.accept(new ModelResourceLocation(modelLocation, "standalone"));
         clearCache();
     }
 

@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * The handle every client-thread step body receives. Everything a scenario can reach at runtime goes
@@ -34,7 +36,7 @@ import java.util.function.Function;
  * that a scenario the framework's named steps do not cover can still be written as plain Java —
  * which is the point: the fluent vocabulary is convenience over these primitives, not a cage.
  *
- * <p>Deliberately <b>not</b> {@code @OnlyIn(Dist.CLIENT)} even though this is a client API: the
+ * <p>Deliberately <b>not</b> {@code @Environment(EnvType.CLIENT)} even though this is a client API: the
  * {@code ctx -> ...} lambdas inside a {@link com.lowdragmc.lowdraglib2.uitest.mp.MPScenario}'s
  * client blocks put this type in the scenario class's synthetic method signatures, and linking that
  * class on the dedicated-server process must be able to <em>load</em> this one. It is never linked

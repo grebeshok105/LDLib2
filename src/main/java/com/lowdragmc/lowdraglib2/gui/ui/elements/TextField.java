@@ -1027,7 +1027,7 @@ public class TextField extends BindableUIElement<String> {
      * The rendered content of the text (formatter applied + font), used to measure caret/selection positions so
      * that they stay aligned with what {@link #drawBackgroundAdditional} actually draws (including bold styling).
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Component getStyledLine() {
         var formattedText = formatter == null ? Component.literal(rawText) : formatter.apply(rawText);
         return TextUtilities.withFont(formattedText, getTextFieldStyle().font());

@@ -858,7 +858,7 @@ public abstract class WorldSceneRenderer {
                     poseStack.pushPose();
                     poseStack.setIdentity();
                     poseStack.translate(cameraEntity.getX(), cameraEntity.getY(), cameraEntity.getZ());
-                    particleManager.render(poseStack, camera, particleTicks, type -> !type.isTranslucent());
+                    particleManager.render(poseStack, camera, particleTicks, type -> type != ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT);
                     poseStack.popPose();
                 }
             }
@@ -957,7 +957,7 @@ public abstract class WorldSceneRenderer {
         if (block != Blocks.AIR && state.getRenderShape() != INVISIBLE) {
             var model = brd.getBlockModel(state);
             randomSource.setSeed(state.getSeed(pos));
-            if (ItemBlockRenderTypes.getRenderLayers(state).contains(layer)) {
+            if (ItemBlockRenderTypes.getChunkRenderType(state) == layer) {
                 poseStack.pushPose();
                 poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
                 brd.renderBatched(state, pos, world, poseStack, wrapperBuffer, false, randomSource);

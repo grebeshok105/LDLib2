@@ -15,6 +15,7 @@ import net.minecraft.nbt.Tag;
 import java.io.File;
 import java.util.Locale;
 import java.util.Set;
+import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 
 @KJSBindings
 public class TexturesResource extends Resource<IGuiTexture> {

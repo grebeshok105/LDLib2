@@ -50,7 +50,6 @@ public class ModelFactory {
                 return getUnBakedModel(location);
             }
 
-            @Override
             public @Nullable UnbakedModel getTopLevelModel(ModelResourceLocation modelResourceLocation) {
                 return ModelFactory.getTopLevelModel(modelResourceLocation);
             }
@@ -93,7 +92,7 @@ public class ModelFactory {
         return new ModelBaker() {
             @Override
             public UnbakedModel getModel(ResourceLocation location) {
-                var model = getTopLevelModel(ModelResourceLocation.standalone(location));
+                var model = getTopLevelModel(new ModelResourceLocation(location, "standalone"));
                 if (model != null) return model;
                 var missing = getTopLevelModel(ModelBakery.MISSING_MODEL_VARIANT);
                 if (missing == null) {
@@ -102,12 +101,10 @@ public class ModelFactory {
                 return missing;
             }
 
-            @Override
             public @Nullable UnbakedModel getTopLevelModel(ModelResourceLocation modelResourceLocation) {
                 return ModelFactory.getTopLevelModel(modelResourceLocation);
             }
 
-            @Override
             public @Nullable BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
                 UnbakedModel unbakedmodel = this.getModel(location);
                 if (unbakedmodel instanceof BlockModel blockmodel) {
@@ -118,7 +115,6 @@ public class ModelFactory {
                 return unbakedmodel.bake(this, sprites, state);
             }
 
-            @Override
             public @Nullable BakedModel bakeUncached(UnbakedModel unbakedModel, ModelState modelState, Function<Material, TextureAtlasSprite> function) {
                 if (unbakedModel instanceof BlockModel blockmodel) {
                     if (blockmodel.getRootModel() == ModelBakery.GENERATION_MARKER) {
@@ -128,7 +124,6 @@ public class ModelFactory {
                 return unbakedModel.bake(this, function, modelState);
             }
 
-            @Override
             public Function<Material, TextureAtlasSprite> getModelTextureGetter() {
                 return Material::sprite;
             }

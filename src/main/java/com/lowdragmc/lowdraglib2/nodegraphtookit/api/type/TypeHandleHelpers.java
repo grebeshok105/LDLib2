@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @UtilityClass
 public final class TypeHandleHelpers {
@@ -168,7 +170,7 @@ public final class TypeHandleHelpers {
      * The question one <em>wants</em> to ask is "would {@link ITypeConfigurable#DEFAULT} find a
      * widget for this type", and it cannot be asked from here. It bottoms out in
      * {@link com.lowdragmc.lowdraglib2.configurator.ConfiguratorAccessors}, whose registry field is
-     * {@code @OnlyIn(Dist.CLIENT)}; off the client that is not a graceful miss but a
+     * {@code @Environment(EnvType.CLIENT)}; off the client that is not a graceful miss but a
      * {@code NoSuchFieldError}, and a graph's supported types are read on both sides.
      *
      * <p>A registered default value is the common-side stand-in, and it is a real signal rather than
