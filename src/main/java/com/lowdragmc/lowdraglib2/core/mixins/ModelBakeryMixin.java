@@ -5,8 +5,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
-import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.client.model.ModelFactory;
+import com.lowdragmc.lowdraglib2.client.model.fabric.LDLRendererModel;
 import com.lowdragmc.lowdraglib2.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib2.client.renderer.IItemRendererProvider;
 import net.minecraft.client.resources.model.ModelBakery;
@@ -67,7 +67,7 @@ public abstract class ModelBakeryMixin {
             ResourceLocation resourceLocation = modelResourceLocation.id();
             var block = BuiltInRegistries.BLOCK.get(resourceLocation);
             if (block instanceof IBlockRendererProvider) {
-                UnbakedModel newModel = getModel(LDLib2.id("block/renderer_model"));
+                UnbakedModel newModel = LDLRendererModel.INSTANCE;
                 model.set(newModel);
                 return newModel.getDependencies();
             }

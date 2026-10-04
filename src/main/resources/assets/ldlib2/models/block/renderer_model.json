@@ -1,4 +1,3 @@
 {
-  "parent": "neoforge:block/default",
-  "loader": "ldlib2:renderer"
+  "parent": "block/block"
 }
