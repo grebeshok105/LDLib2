@@ -54,15 +54,21 @@ public class CommonProxy {
         });
 
         // Registration for blocks, items, BEs
-        if (Platform.isDevEnv()) {
-            register("test", TestBlock.BLOCK);
-            register("test", TestItem.ITEM);
-            register("test_2", NoRendererTestBlock.BLOCK);
-            register("test_2", new BlockItem(NoRendererTestBlock.BLOCK, new Item.Properties()));
-            TEST_BE_TYPE = register("test", BlockEntityType.Builder.of(TestBlockEntity::new, TestBlock.BLOCK).build(null));
+        // Dedicated servers cannot load these classes at all: TestBlock/TestItem and
+        // RendererBlock implement client renderer interfaces whose supertypes/signatures pull
+        // net.minecraft.client.* (blocked by the loader on server env, absent from server jars).
+        // ClientProxy already null-guards TEST_BE_TYPE/RENDERER_BE_TYPE for this.
+        if (!LDLib2.isServer()) {
+            if (Platform.isDevEnv()) {
+                register("test", TestBlock.BLOCK);
+                register("test", TestItem.ITEM);
+                register("test_2", NoRendererTestBlock.BLOCK);
+                register("test_2", new BlockItem(NoRendererTestBlock.BLOCK, new Item.Properties()));
+                TEST_BE_TYPE = register("test", BlockEntityType.Builder.of(TestBlockEntity::new, TestBlock.BLOCK).build(null));
+            }
+            register("renderer_block", RendererBlock.BLOCK);
+            RENDERER_BE_TYPE = register("renderer_block", BlockEntityType.Builder.of(RendererBlockEntity::new, RendererBlock.BLOCK).build(null));
         }
-        register("renderer_block", RendererBlock.BLOCK);
-        RENDERER_BE_TYPE = register("renderer_block", BlockEntityType.Builder.of(RendererBlockEntity::new, RendererBlock.BLOCK).build(null));
 
         // init common features
         CommonProxy.init();
