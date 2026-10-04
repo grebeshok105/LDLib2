@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,13 +19,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class HeldItemUIMenuType {
-    public record HeldItemUIOpeningData(InteractionHand hand, ItemStack itemStack) {}
-    public static final net.minecraft.network.codec.StreamCodec<RegistryFriendlyByteBuf, HeldItemUIOpeningData> STREAM_CODEC = net.minecraft.network.codec.StreamCodec.of(
+    public record HeldItemUIOpeningData(InteractionHand hand, ItemStack itemStack, byte[] initialSync) {}
+    public static final StreamCodec<RegistryFriendlyByteBuf, HeldItemUIOpeningData> STREAM_CODEC = StreamCodec.of(
         (buf, data) -> {
             buf.writeEnum(data.hand());
             ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, data.itemStack());
+            ByteBufCodecs.BYTE_ARRAY.encode(buf, data.initialSync());
         },
-        buf -> new HeldItemUIOpeningData(buf.readEnum(InteractionHand.class), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf))
+        buf -> new HeldItemUIOpeningData(buf.readEnum(InteractionHand.class), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf), ByteBufCodecs.BYTE_ARRAY.decode(buf))
     );
 
     public static boolean openUI(ServerPlayer player, InteractionHand hand) {
@@ -42,7 +45,9 @@ public class HeldItemUIMenuType {
         var itemstack = data.itemStack();
         if (itemstack.getItem() instanceof HeldItemUI heldItemUI) {
             var holder = heldItemUI.createUIHolder(player, hand, itemstack);
-            return new ModularUIContainerMenu(LDMenuTypes.HELD_ITEM_UI, windowId, inv, holder);
+            var menu = new ModularUIContainerMenu(LDMenuTypes.HELD_ITEM_UI, windowId, inv, holder);
+            LDMenuTypes.readInitialData(menu, data.initialSync(), player);
+            return menu;
         }
         throw new IllegalArgumentException("No held item ui found for item " + itemstack);
     }
@@ -96,7 +101,8 @@ public class HeldItemUIMenuType {
             return new ModularUIContainerMenu(LDMenuTypes.HELD_ITEM_UI, containerId, playerInventory, this);
         }
 
-            public HeldItemUIOpeningData getScreenOpeningData(net.minecraft.server.level.ServerPlayer player) { return new HeldItemUIOpeningData(hand, itemStack); }
+        @Override
+        public HeldItemUIOpeningData getScreenOpeningData(ServerPlayer player) { return new HeldItemUIOpeningData(hand, itemStack, LDMenuTypes.captureInitialData(player)); }
 
         @Override
         public ModularUI createUI(Player player) {

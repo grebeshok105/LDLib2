@@ -20,14 +20,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class BlockUIMenuType {
     
-    public record BlockUIOpeningData(BlockPos pos, BlockState state) {}
+    public record BlockUIOpeningData(BlockPos pos, BlockState state, byte[] initialSync) {}
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockState> BLOCK_STATE_STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(BlockState.CODEC);
     public static final StreamCodec<RegistryFriendlyByteBuf, BlockUIOpeningData> STREAM_CODEC = StreamCodec.of(
         (buf, data) -> {
             buf.writeBlockPos(data.pos());
             BLOCK_STATE_STREAM_CODEC.encode(buf, data.state());
+            ByteBufCodecs.BYTE_ARRAY.encode(buf, data.initialSync());
         },
-        buf -> new BlockUIOpeningData(buf.readBlockPos(), BLOCK_STATE_STREAM_CODEC.decode(buf))
+        buf -> new BlockUIOpeningData(buf.readBlockPos(), BLOCK_STATE_STREAM_CODEC.decode(buf), ByteBufCodecs.BYTE_ARRAY.decode(buf))
     );
 
     public static boolean openUI(ServerPlayer player, BlockPos pos) {
@@ -46,7 +47,9 @@ public class BlockUIMenuType {
         var blockstate = data.state();
         if (blockstate.getBlock() instanceof BlockUI blockUI) {
             var holder = blockUI.createUIHolder(player, pos, blockstate);
-            return new ModularUIContainerMenu(LDMenuTypes.BLOCK_UI, windowId, inv, holder);
+            var menu = new ModularUIContainerMenu(LDMenuTypes.BLOCK_UI, windowId, inv, holder);
+            LDMenuTypes.readInitialData(menu, data.initialSync(), player);
+            return menu;
         }
         throw new IllegalArgumentException("No block ui found for block " + blockstate);
     }
@@ -100,7 +103,7 @@ public class BlockUIMenuType {
         }
 
         @Override
-        public BlockUIOpeningData getScreenOpeningData(net.minecraft.server.level.ServerPlayer player) { return new BlockUIOpeningData(pos, blockState); }
+        public BlockUIOpeningData getScreenOpeningData(ServerPlayer player) { return new BlockUIOpeningData(pos, blockState, LDMenuTypes.captureInitialData(player)); }
 
         @Override
         public ModularUI createUI(Player player) {
