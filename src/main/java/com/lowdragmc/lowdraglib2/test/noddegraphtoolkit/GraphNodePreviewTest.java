@@ -6,15 +6,12 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.model.node.AbstractNodeModel;
 import com.lowdragmc.lowdraglib2.nodegraphtookit.model.node.CustomNodeModelImpl;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
 /**
  * Node preview system: lifecycle (auto-create / ORPHAN skip), duplication, dependency wiring, and
  * persistence of the expanded state. UI rendering is validated manually.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphNodePreviewTest {
 
     // ------------------------------------------------------------------
@@ -22,7 +19,6 @@ public class GraphNodePreviewTest {
     //    up in getDependentModels; a plain node has none.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void previewAutoCreatedAndDependent(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start previewAutoCreatedAndDependent");
 
@@ -49,7 +45,6 @@ public class GraphNodePreviewTest {
     // 2. ORPHAN spawn does not create a preview.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void orphanSpawnSkipsPreview(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start orphanSpawnSkipsPreview");
 
@@ -70,7 +65,6 @@ public class GraphNodePreviewTest {
     // 3. Duplicating a node copies the preview expanded state.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void duplicateCopiesExpandedState(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start duplicateCopiesExpandedState");
 
@@ -97,7 +91,6 @@ public class GraphNodePreviewTest {
     //    preview model is recreated on load (syncNodePreview).
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void expandedStatePersistsRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start expandedStatePersistsRoundTrip");
@@ -134,7 +127,6 @@ public class GraphNodePreviewTest {
     //    remains expanded; overriding the API can start collapsed.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void previewDefaultExpandedApi(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start previewDefaultExpandedApi");
 
@@ -163,7 +155,6 @@ public class GraphNodePreviewTest {
     // 6. Persisted user state wins over the node's default preview state.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void previewExpandedStateOverridesDefaultOnLoad(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start previewExpandedStateOverridesDefaultOnLoad");
@@ -197,7 +188,6 @@ public class GraphNodePreviewTest {
     //    node's default preview state.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void duplicatePreviewStateOverridesDefault(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start duplicatePreviewStateOverridesDefault");
 

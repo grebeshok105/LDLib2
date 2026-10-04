@@ -4,9 +4,9 @@ import com.lowdragmc.lowdraglib2.utils.Scope;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
  *
  * @see #setSource(Source)
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class KeyState {
 
     /** Where held-key state comes from. */

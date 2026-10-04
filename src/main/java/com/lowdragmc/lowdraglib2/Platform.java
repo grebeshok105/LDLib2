@@ -1,7 +1,8 @@
 package com.lowdragmc.lowdraglib2;
 
 import com.lowdragmc.lowdraglib2.utils.ResourceHelper;
-import lombok.Getter;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -9,12 +10,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.data.loading.DatagenModLoader;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +21,10 @@ import java.util.stream.Stream;
 
 public class Platform {
 
-    @Getter(lazy = true)
     private static final RegistryAccess BLANK_REGISTRY_ACCESS = getBlankRegistryAccess();
+
+    @ApiStatus.Internal
+    public static MinecraftServer SERVER = null;
 
     @ApiStatus.Internal
     public static RegistryAccess SERVER_REGISTRY_ACCESS = null;
@@ -62,31 +59,37 @@ public class Platform {
     }
 
     public static String platformName() {
-        return "NeoForge";
+        return "Fabric";
     }
 
     public static boolean isForge() {
+        return false;
+    }
+
+    public static boolean isFabric() {
         return true;
     }
 
     public static boolean isDevEnv() {
-        return !FMLLoader.isProduction();
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
+
+
     public static boolean isDatagen() {
-        return DatagenModLoader.isRunningDataGen();
+        return System.getProperty("fabric-api.datagen") != null;
     }
 
     public static boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        return FabricLoader.getInstance().isModLoaded(modId);
     }
 
     public static boolean isClient() {
-        return FMLEnvironment.dist == Dist.CLIENT;
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }
 
     public static MinecraftServer getMinecraftServer() {
-        return ServerLifecycleHooks.getCurrentServer();
+        return SERVER;
     }
 
     /**
@@ -104,7 +107,7 @@ public class Platform {
     }
 
     public static Path getGamePath() {
-        return FMLLoader.getGamePath();
+        return FabricLoader.getInstance().getGameDir();
     }
 
     private static RegistryAccess getBlankRegistryAccess() {
@@ -133,18 +136,20 @@ public class Platform {
     public static RegistryAccess getFrozenRegistry() {
         RegistryAccess serverRegistryAccess = SERVER_REGISTRY_ACCESS;
         if (LDLib2.isServer()) {
-            return serverRegistryAccess == null ? getBLANK_REGISTRY_ACCESS() : serverRegistryAccess;
+            RegistryAccess access = serverRegistryAccess == null ? BLANK_REGISTRY_ACCESS : serverRegistryAccess;
+            return access == null ? BLANK_REGISTRY_ACCESS : access;
         } else if (LDLib2.isRemote()) {
             var minecraft = getMinecraftClient();
             if (minecraft != null && minecraft.getConnection() != null) {
                 return getRegistryFromMultipleSources(minecraft.getConnection().registryAccess(), serverRegistryAccess);
             }
         }
-        return serverRegistryAccess == null ? getClientRegistryAccess() : serverRegistryAccess;
+        RegistryAccess access = serverRegistryAccess == null ? getClientRegistryAccess() : serverRegistryAccess;
+        return access == null ? BLANK_REGISTRY_ACCESS : access;
     }
 
     public static RegistryAccess getServerRegistryAccess() {
-        return SERVER_REGISTRY_ACCESS == null ? getBLANK_REGISTRY_ACCESS() : SERVER_REGISTRY_ACCESS;
+        return SERVER_REGISTRY_ACCESS == null ? BLANK_REGISTRY_ACCESS : SERVER_REGISTRY_ACCESS;
     }
 
     public static RegistryAccess getClientRegistryAccess() {
@@ -152,7 +157,7 @@ public class Platform {
         if (minecraft != null && minecraft.getConnection() != null) {
             return minecraft.getConnection().registryAccess();
         }
-        return SERVER_REGISTRY_ACCESS == null ? getBLANK_REGISTRY_ACCESS() : SERVER_REGISTRY_ACCESS;
+        return SERVER_REGISTRY_ACCESS == null ? BLANK_REGISTRY_ACCESS : SERVER_REGISTRY_ACCESS;
     }
 
     private static RegistryAccess getRegistryFromMultipleSources(RegistryAccess... accesses) {
@@ -160,6 +165,7 @@ public class Platform {
             @Override
             public <E> Optional<Registry<E>> registry(ResourceKey<? extends Registry<? extends E>> registryKey) {
                 for (RegistryAccess access : accesses) {
+                    if (access == null) continue;
                     Optional<Registry<E>> registry = access.registry(registryKey);
                     if (registry.isPresent()) {
                         return registry;
@@ -170,7 +176,7 @@ public class Platform {
 
             @Override
             public Stream<RegistryEntry<?>> registries() {
-                return Arrays.stream(accesses).flatMap(RegistryAccess::registries);
+                return Arrays.stream(accesses).filter(java.util.Objects::nonNull).flatMap(RegistryAccess::registries);
             }
         };
     }

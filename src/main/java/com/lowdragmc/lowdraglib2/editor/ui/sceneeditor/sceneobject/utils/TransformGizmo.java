@@ -21,8 +21,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -73,7 +73,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>The squares sit well out along their axes rather than hugging the origin, so that aiming at one is not
  * a contest between it, the centre box and two arrows within the same few pixels.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class TransformGizmo extends SceneObject implements ISceneRendering, ISceneInteractable {
     public enum Mode {
         NONE,
@@ -698,7 +698,7 @@ public class TransformGizmo extends SceneObject implements ISceneRendering, ISce
     // ---------------------------------------------------------------------------------------------
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void updateFrame(float partialTicks) {
         super.updateFrame(partialTicks);
         if (targetTransform == null || !(getScene() instanceof SceneEditor editor)) {
@@ -820,7 +820,7 @@ public class TransformGizmo extends SceneObject implements ISceneRendering, ISce
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void draw(PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
         if (targetTransform == null) return;
         poseStack.pushPose();
@@ -830,7 +830,7 @@ public class TransformGizmo extends SceneObject implements ISceneRendering, ISce
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void drawInternal(PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
         if (targetTransform == null) return;
         switch (mode) {

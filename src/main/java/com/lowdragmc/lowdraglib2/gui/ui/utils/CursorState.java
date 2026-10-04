@@ -1,8 +1,8 @@
 package com.lowdragmc.lowdraglib2.gui.ui.utils;
 
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @see #setSource(Source)
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class CursorState {
 
     /** Where the pointer position comes from, in GUI-scaled screen coordinates. */

@@ -5,8 +5,6 @@ import com.lowdragmc.lowdraglib2.LDLib2Registries;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Slider;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,11 +12,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * {@link Slider} is a registered UI element, so it has to be reachable by the names XML and the editor
  * use, and its value model has to behave like {@link com.lowdragmc.lowdraglib2.gui.ui.elements.Scroller}'s.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class SliderTest {
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void registeredUnderBothNames(GameTestHelper helper) {
         for (var name : new String[]{"slider-horizontal", "slider-vertical"}) {
             var holder = LDLib2Registries.UI_ELEMENTS.get(name);
@@ -36,7 +32,6 @@ public class SliderTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void valueIsClampedToRange(GameTestHelper helper) {
         var slider = new Slider.Horizontal().setRange(10, 100);
         slider.setValue(500f);
@@ -60,7 +55,6 @@ public class SliderTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void normalizedValueRoundTrips(GameTestHelper helper) {
         var slider = new Slider.Vertical().setRange(10, 100);
         slider.setNormalizedValue(0.5f);
@@ -82,7 +76,6 @@ public class SliderTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void listenersOnlyFireOnRealChanges(GameTestHelper helper) {
         var slider = new Slider.Horizontal().setRange(0, 10);
         var calls = new AtomicInteger();
@@ -103,7 +96,6 @@ public class SliderTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void stepMovesByAFractionOfTheRange(GameTestHelper helper) {
         var slider = new Slider.Horizontal().setRange(0, 100);
         slider.sliderStyle(style -> style.sliderStep(0.25f));

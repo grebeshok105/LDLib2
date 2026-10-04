@@ -7,8 +7,7 @@ import com.lowdragmc.lowdraglib2.networking.both.PacketRPCPacket;
 import com.lowdragmc.lowdraglib2.networking.both.PacketUIRPCEvent;
 import com.lowdragmc.lowdraglib2.networking.both.PacketUIRPCEventReturn;
 import com.lowdragmc.lowdraglib2.networking.s2c.SPacketAutoSyncBlockEntity;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 /**
  * Author: KilaBash
@@ -17,18 +16,36 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
  */
 public class LDLNetworking {
 
-    public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(LDLib2.MOD_ID).optional();
 
-        registrar.playToClient(SPacketAutoSyncBlockEntity.TYPE, SPacketAutoSyncBlockEntity.CODEC, SPacketAutoSyncBlockEntity::execute);
+    public static void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
+        if (net.fabricmc.api.EnvType.CLIENT == net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType()) {
+            net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(payload);
+        }
+    }
 
-        registrar.playBidirectional(PacketUIRPCEvent.TYPE, PacketUIRPCEvent.CODEC, PacketUIRPCEvent::execute);
-        registrar.playBidirectional(PacketUIRPCEventReturn.TYPE, PacketUIRPCEventReturn.CODEC, PacketUIRPCEventReturn::execute);
+    public static void sendToPlayer(net.minecraft.server.level.ServerPlayer player, net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
+        net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, payload);
+    }
 
-        registrar.playBidirectional(PacketRPCBlockEntity.TYPE, PacketRPCBlockEntity.CODEC, PacketRPCBlockEntity::execute);
-        registrar.playBidirectional(PacketModularUISync.TYPE, PacketModularUISync.CODEC, PacketModularUISync::execute);
+    public static void register() {
+        // S2C
+        PayloadTypeRegistry.playS2C().register(SPacketAutoSyncBlockEntity.TYPE, SPacketAutoSyncBlockEntity.CODEC);
 
-        registrar.playBidirectional(PacketRPCPacket.TYPE, PacketRPCPacket.CODEC, PacketRPCPacket::execute);
+        // C2S
+        PayloadTypeRegistry.playC2S().register(PacketUIRPCEvent.TYPE, PacketUIRPCEvent.CODEC);
+
+        // Bidirectional (registering both registries, matching upstream playBidirectional)
+        PayloadTypeRegistry.playS2C().register(PacketUIRPCEventReturn.TYPE, PacketUIRPCEventReturn.CODEC);
+        PayloadTypeRegistry.playC2S().register(PacketUIRPCEventReturn.TYPE, PacketUIRPCEventReturn.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(PacketRPCBlockEntity.TYPE, PacketRPCBlockEntity.CODEC);
+        PayloadTypeRegistry.playC2S().register(PacketRPCBlockEntity.TYPE, PacketRPCBlockEntity.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(PacketModularUISync.TYPE, PacketModularUISync.CODEC);
+        PayloadTypeRegistry.playC2S().register(PacketModularUISync.TYPE, PacketModularUISync.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(PacketRPCPacket.TYPE, PacketRPCPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(PacketRPCPacket.TYPE, PacketRPCPacket.CODEC);
     }
 
 }

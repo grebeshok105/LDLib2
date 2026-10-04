@@ -3,92 +3,75 @@ package com.lowdragmc.lowdraglib2.client;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.Platform;
 import com.lowdragmc.lowdraglib2.client.font.LDFontManager;
+import com.lowdragmc.lowdraglib2.client.font.LDFontStatsOverlay;
 import com.lowdragmc.lowdraglib2.editor.resource.EditorResourceEvent;
 import com.lowdragmc.lowdraglib2.editor.resource.ResourceInstance;
 import com.lowdragmc.lowdraglib2.editor.resource.TexturesResource;
-import com.lowdragmc.lowdraglib2.gui.holder.IModularUIHolder;
 import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.CursorOverlay;
 import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.MCSprites;
 import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.OreSprites;
 import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.Sprites;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.commands.CommandSourceStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import com.lowdragmc.lowdraglib2.client.font.LDFontStatsOverlay;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
-import net.neoforged.neoforge.client.event.ScreenEvent;
 
-import java.util.List;
 
 /**
  * @author KilaBash
  * @date 2022/5/12
  * @implNote EventListener
+ * @port ELB_GG
+ * @date_port 2026/03/29
+ * @port_to fabric
  */
-@EventBusSubscriber(modid = LDLib2.MOD_ID, value = Dist.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public class ClientEventListener {
 
-    /**
-     * The two things about the text renderer that can only be noticed by looking: the font related video
-     * settings, which vanilla gives mods no event for, and rasterized glyph sizes going unused, which is time
-     * based by nature. Both free textures, so both belong between frames rather than inside one.
-     */
-    @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
-        LDFontManager.INSTANCE.refreshVanillaFontOptions();
-        LDFontManager.INSTANCE.evictStaleRasterSizes();
+    public static void register() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            ClientCommands.createClientCommands().forEach(dispatcher::register);
+        });
+
+        /**
+         * The two things about the text renderer that can only be noticed by looking: the font related video
+         * settings, which vanilla gives mods no event for, and rasterized glyph sizes going unused, which is time
+         * based by nature. Both free textures, so both belong between frames rather than inside one.
+         */
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            LDFontManager.INSTANCE.refreshVanillaFontOptions();
+            LDFontManager.INSTANCE.evictStaleRasterSizes();
+        });
+
+        /**
+         * TEMPORARY: the statistics overlay is a HUD layer, and HUD layers are drawn before the open screen rather
+         * than over it, so on a screen it would sit behind the very interface it is reporting on. Drawing it again
+         * here puts it on top. See {@link LDFontStatsOverlay}.
+         */
+        ScreenEvents.AFTER_RENDER.register((screen, graphics, mouseX, mouseY, tickDelta) -> {
+            if (Platform.isDevEnv()) {
+                LDFontStatsOverlay.INSTANCE.render(graphics, Minecraft.getInstance().getTimer());
+            }
+            // Only draws while something is driving the cursor from inside the process; see the class doc.
+            CursorOverlay.render(graphics, tickDelta);
+        });
     }
 
-    /**
-     * TEMPORARY: the statistics overlay is a HUD layer, and HUD layers are drawn before the open screen rather
-     * than over it, so on a screen it would sit behind the very interface it is reporting on. Drawing it again
-     * here puts it on top. See {@link LDFontStatsOverlay}.
-     */
-    @SubscribeEvent
-    public static void onScreenRendered(ScreenEvent.Render.Post event) {
-        if (Platform.isDevEnv()) {
-            LDFontStatsOverlay.INSTANCE.render(event.getGuiGraphics(), Minecraft.getInstance().getTimer());
-        }
-        // Only draws while something is driving the cursor from inside the process; see the class doc.
-        CursorOverlay.render(event.getGuiGraphics(), event.getPartialTick());
+    public static void init() {
+        EditorResourceEvent.LOAD_BUILTIN.register(ClientEventListener::onResourceLoad);
     }
 
-    @SubscribeEvent
-    public static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
-        var dispatcher = event.getDispatcher();
-        List<LiteralArgumentBuilder<CommandSourceStack>> commands = ClientCommands.createClientCommands();
-        commands.forEach(dispatcher::register);
-    }
-
-    @SubscribeEvent
-    public static void onRegisterClientCommands(ScreenEvent.Init.Pre event) {
-        var screen = event.getScreen();
-        if (screen instanceof AbstractContainerScreen<?> containerScreen && containerScreen.getMenu() instanceof IModularUIHolder holder) {
-            var mui = holder.getModularUI();
-            if (mui != null) {
-                mui.setScreenAndInit(containerScreen);
-                event.addListener(mui.getWidget());
+    @SuppressWarnings("unchecked")
+    public static void onResourceLoad(ResourceInstance<?> resourceInstance) {
+        if (resourceInstance.resource instanceof TexturesResource texturesResource) {
+            if (texturesResource.getName().equals("texture")) {
+                Sprites.init((ResourceInstance<IGuiTexture>) resourceInstance);
+                MCSprites.init((ResourceInstance<IGuiTexture>) resourceInstance);
+                OreSprites.init((ResourceInstance<IGuiTexture>) resourceInstance);
             }
         }
     }
 
-    @SubscribeEvent
-    public static void onLoadBuiltinEditorResource(EditorResourceEvent.LoadBuiltin event) {
-        if (event.resourceInstance.resource == TexturesResource.INSTANCE) {
-            Sprites.init((ResourceInstance<IGuiTexture>) event.resourceInstance);
-            MCSprites.init((ResourceInstance<IGuiTexture>) event.resourceInstance);
-            OreSprites.init((ResourceInstance<IGuiTexture>) event.resourceInstance);
-        }
-    }
-//
 //    @SubscribeEvent
 //    public static void onRegisterGuiLayers(RegisterGuiLayersEvent event) {
 //        // memoize and delay, to make sure ui is generated after the world loading

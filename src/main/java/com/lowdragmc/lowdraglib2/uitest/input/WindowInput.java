@@ -5,8 +5,8 @@ import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.UISurface;
 import com.lowdragmc.lowdraglib2.gui.ui.window.ModularUIWindow;
 import com.lowdragmc.lowdraglib2.uitest.ElementBounds;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -27,7 +27,7 @@ import org.lwjgl.glfw.GLFW;
  * frame, so several primitives posted together are all dispatched against the same layout and the
  * same hover, and any gesture that depends on a frame passing in between — a drag — will not start.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class WindowInput {
 
     private final ModularUIWindow window;

@@ -3,11 +3,11 @@ package com.lowdragmc.lowdraglib2.gui.ui.debugger;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.Optional;
 
 /**
@@ -27,7 +27,7 @@ import java.util.Optional;
  * @param x          window position, or {@link #UNPLACED} to let the platform decide
  * @param alwaysOnTop whether the window was pinned above the others
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public record UIDebuggerWindowState(int x, int y, int width, int height, boolean alwaysOnTop) {
 
     /** No remembered position; the platform places the window. */

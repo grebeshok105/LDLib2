@@ -1,9 +1,9 @@
 package com.lowdragmc.lowdraglib2.gui.ui.rendering;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * The game window itself — the surface every UI used to be drawn into implicitly.
@@ -11,7 +11,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * <p>Nothing is cached: the main render target is swapped out on resize and the gui scale changes
  * with the option, so every accessor reads through.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public enum MainWindowSurface implements UISurface {
     INSTANCE;
 

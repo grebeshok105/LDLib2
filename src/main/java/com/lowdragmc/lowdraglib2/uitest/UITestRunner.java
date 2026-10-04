@@ -20,16 +20,16 @@ import net.minecraft.client.gui.screens.DisconnectedScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLLoader;
+import net.minecraft.SharedConstants;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import java.util.List;
 
 /**
@@ -40,7 +40,7 @@ import java.util.List;
  * a world finishes loading, so the harness would stall there forever and only resume if a human
  * pressed escape.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class UITestRunner {
 
     private enum Phase {
@@ -884,8 +884,10 @@ public final class UITestRunner {
     private void collectEnvironment(Minecraft minecraft) {
         var window = minecraft.getWindow();
         var environment = report.environment;
-        environment.minecraft = FMLLoader.versionInfo().mcVersion();
-        environment.neoforge = FMLLoader.versionInfo().neoForgeVersion();
+        environment.minecraft = SharedConstants.getCurrentVersion().getName();
+        environment.loader = FabricLoader.getInstance().getModContainer("fabricloader")
+                .map(container -> "fabric " + container.getMetadata().getVersion().getFriendlyString())
+                .orElse("fabric");
         environment.java = System.getProperty("java.version", "");
         environment.os = System.getProperty("os.name", "") + " " + System.getProperty("os.version", "");
         environment.guiScale = (int) window.getGuiScale();
@@ -897,8 +899,8 @@ public final class UITestRunner {
         environment.headless = config.headless();
         // Worth recording: a dev runtime loads the whole localImplementation set, and any of those
         // can change layout or the render pipeline under a capture.
-        ModList.get().forEachModContainer((id, container) ->
-                environment.mods.add(id + "@" + container.getModInfo().getVersion()));
+        FabricLoader.getInstance().getAllMods().forEach(container ->
+                environment.mods.add(container.getMetadata().getId() + "@" + container.getMetadata().getVersion().getFriendlyString()));
         environment.mods.sort(String::compareTo);
     }
 

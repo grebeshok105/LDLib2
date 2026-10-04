@@ -1,9 +1,9 @@
 package com.lowdragmc.lowdraglib2.gui.ui.rendering;
 
 import com.lowdragmc.lowdraglib2.utils.Scope;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Backing store for {@link UISurface#current()}.
@@ -12,7 +12,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * stack rather than a single field because a UI frame can nest (a scene or preview element drawing
  * another UI into its own target).
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 final class SurfaceStack {
     private static final ObjectArrayList<UISurface> STACK = new ObjectArrayList<>();
 

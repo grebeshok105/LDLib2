@@ -6,12 +6,15 @@ import com.lowdragmc.lowdraglib2.configurator.ui.ConfiguratorGroup;
 import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.IHistoryStack;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import com.lowdragmc.lowdraglib2.registry.annotation.LDLRegister;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
+import com.lowdragmc.lowdraglib2.utils.INBTSerializable;
+import org.appliedenergistics.yoga.YogaDisplay;
+import org.appliedenergistics.yoga.YogaEdge;
+import org.appliedenergistics.yoga.YogaGutter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
@@ -23,7 +26,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Accessors(chain = true)
-@KJSBindings
 @LDLRegister(name = "inspector", group = "misc", registry = "ldlib2:ui_element")
 public class Inspector extends UIElement {
     public final ScrollerView scrollerView;

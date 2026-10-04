@@ -1,32 +1,38 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
-
 # gradle
-build
-.gradle
+.gradle/
+build/
+out/
+classes/
 
-# other
+# eclipse
 eclipse
 run
 runs
 run-data
 
-repo
+# idea
+.idea/
+*.iml
+*.ipr
+*.iws
 
+# vscode
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# fabric
+run/
+
+# OS
+.DS_Store
+Thumbs.db
 *.DS_Store
 *.log
+
+repo
 /.claude
 CLAUDE.md
 /logs

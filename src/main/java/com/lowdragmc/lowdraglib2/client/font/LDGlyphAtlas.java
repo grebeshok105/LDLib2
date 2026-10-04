@@ -9,8 +9,6 @@ import net.minecraft.client.gui.font.GlyphRenderTypes;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -20,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.function.Function;
 
 /**
@@ -33,7 +33,7 @@ import java.util.function.Function;
  * pages holding glyphs rasterized at their drawn size use {@code GL_NEAREST}, since one texel is one device
  * pixel there and filtering would only soften them.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class LDGlyphAtlas implements AutoCloseable {
     /**
      * Gutter kept between neighbouring glyphs so linear filtering never blends two glyphs together.
@@ -180,7 +180,7 @@ public class LDGlyphAtlas implements AutoCloseable {
     /**
      * One atlas page, backed by a GL_R8 texture.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public class Page extends AbstractTexture {
         private final ResourceLocation name;
         private final int size;

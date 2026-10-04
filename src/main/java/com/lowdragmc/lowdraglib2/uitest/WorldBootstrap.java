@@ -10,21 +10,21 @@ import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.stream.Stream;
 
 /**
  * Gets the client from "just launched" into a loaded, deterministic world without a human touching
  * the menus.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class WorldBootstrap {
 
     /** Prefix for worlds this harness owns, so leftovers can be swept without touching real saves. */

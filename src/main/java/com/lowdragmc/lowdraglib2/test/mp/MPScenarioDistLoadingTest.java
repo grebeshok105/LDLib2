@@ -8,8 +8,6 @@ import com.lowdragmc.lowdraglib2.uitest.mp.MPScenarioOptions;
 import com.lowdragmc.lowdraglib2.uitest.mp.MPSegment;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
 
@@ -24,11 +22,9 @@ import java.util.List;
  * with the offending scenario's name instead of surfacing as a crashed {@code runMpTest} run.
  * Same idea as {@code UIElementRegistryTest} constructing every UI element server-side.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class MPScenarioDistLoadingTest {
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void mpScenariosDefineOnDedicatedServer(GameTestHelper helper) {
         var registry = LDLib2Registries.MP_SCENARIOS;
         if (registry == null) {

@@ -17,15 +17,14 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.ClientHooks;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11C;
 
 import java.util.ArrayList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.List;
 
 /**
@@ -61,7 +60,7 @@ import java.util.List;
  * modal event loop inside {@code glfwPollEvents}, which Minecraft calls every frame, so dragging one
  * would freeze the entire game for as long as the mouse is held.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ModularUIWindow implements OsWindowHost {
 
     /**
@@ -643,7 +642,8 @@ public class ModularUIWindow implements OsWindowHost {
             RenderSystem.disableBlend();
 
             // The gui projection Minecraft sets up for its own frame, against our target's size.
-            var farPlane = ClientHooks.getGuiFarPlane();
+            // fabric: vanilla GameRenderer GUI ortho far plane (NeoForge ClientHooks.getGuiFarPlane()).
+            var farPlane = 21000f;
             var projection = new Matrix4f().setOrtho(0f,
                     (float) (target.width / guiScale),
                     (float) (target.height / guiScale),

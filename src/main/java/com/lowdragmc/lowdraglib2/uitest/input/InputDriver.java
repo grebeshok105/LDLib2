@@ -10,9 +10,9 @@ import com.lowdragmc.lowdraglib2.uitest.InputMode;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -23,7 +23,7 @@ import org.lwjgl.glfw.GLFW;
  * {@link Screen#mouseClicked(double, double, int)} takes, and the space {@code ElementBounds}
  * produces.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public abstract class InputDriver {
 
     /**

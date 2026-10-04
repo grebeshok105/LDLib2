@@ -7,19 +7,10 @@ import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.UIElementProvider;
-import com.lowdragmc.lowdraglib2.integration.xei.emi.LDLibEMIPlugin;
-import com.lowdragmc.lowdraglib2.integration.xei.jei.LDLibJEIPlugin;
-import com.lowdragmc.lowdraglib2.integration.xei.rei.LDLibREIPlugin;
 import com.lowdragmc.lowdraglib2.utils.LocalizationUtils;
 import com.lowdragmc.lowdraglib2.utils.search.IResultHandler;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
-import dev.emi.emi.api.stack.FluidEmiStack;
-import dev.emi.emi.api.stack.ItemEmiStack;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.neoforge.NeoForgeTypes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
+import dev.architectury.fluid.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -98,19 +89,6 @@ public class RegistrySearchComponent<T> extends SearchComponentConfigurator<T> {
                     item -> Component.translatable(item.getDescriptionId())
             ));
 
-            if (LDLib2.isJeiLoaded()) {
-                RegistrySearchComponent.JEISupport.ghostItem(this, itemStack -> filter.test(itemStack.getItem()),
-                        itemStack -> setValue(itemStack.getItem(), true));
-            }
-            if (LDLib2.isReiLoaded()) {
-                RegistrySearchComponent.REISupport.ghostItem(this, itemStack -> filter.test(itemStack.getItem()),
-                        itemStack -> setValue(itemStack.getItem(), true));
-            }
-            if (LDLib2.isEmiLoaded()) {
-                RegistrySearchComponent.EMISupport.ghostItem(this, itemStack -> filter.test(itemStack.getItem()),
-                        itemStack -> setValue(itemStack.getItem(), true));
-            }
-
             setTranslator(item -> LocalizationUtils.format(item.getDescriptionId()));
         }
     }
@@ -121,19 +99,6 @@ public class RegistrySearchComponent<T> extends SearchComponentConfigurator<T> {
                     block -> new ItemStackTexture(block.asItem()),
                     block -> Component.translatable(block.getDescriptionId())
             ));
-
-            if (LDLib2.isJeiLoaded()) {
-                RegistrySearchComponent.JEISupport.ghostBlock(this, block -> filter.test(block),
-                        block -> setValue(block, true));
-            }
-            if (LDLib2.isReiLoaded()) {
-                RegistrySearchComponent.REISupport.ghostBlock(this, block -> filter.test(block),
-                        block -> setValue(block, true));
-            }
-            if (LDLib2.isEmiLoaded()) {
-                RegistrySearchComponent.EMISupport.ghostBlock(this, block -> filter.test(block),
-                        block -> setValue(block, true));
-            }
 
             setTranslator(block -> LocalizationUtils.format(block.getDescriptionId()));
         }
@@ -148,24 +113,12 @@ public class RegistrySearchComponent<T> extends SearchComponentConfigurator<T> {
                         if (fluid == Fluids.EMPTY) return IGuiTexture.EMPTY;
                         return new FluidStackTexture(fluid);
                     },
-                    fluid -> Component.translatable(fluid.getFluidType().getDescriptionId())
+                    fluid -> Component.translatable(fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId())
             ));
             setFilter(fluid -> fluid != Fluids.EMPTY && fluid.isSource(fluid.defaultFluidState()));
 
-            if (LDLib2.isJeiLoaded()) {
-                RegistrySearchComponent.JEISupport.ghostFluid(this, fluidStack -> filter.test(fluidStack.getFluid()),
-                        fluidStack -> setValue(fluidStack.getFluid(), true));
-            }
-            if (LDLib2.isReiLoaded()) {
-                RegistrySearchComponent.REISupport.ghostFluid(this, fluidStack -> filter.test(fluidStack.getFluid()),
-                        fluidStack -> setValue(fluidStack.getFluid(), true));
-            }
-            if (LDLib2.isEmiLoaded()) {
-                RegistrySearchComponent.EMISupport.ghostFluid(this, fluidStack -> filter.test(fluidStack.getFluid()),
-                        fluidStack -> setValue(fluidStack.getFluid(), true));
-            }
-
-            setTranslator(fluid -> LocalizationUtils.format(fluid.getFluidType().getDescriptionId()));
+            // fabric: vanilla Fluid has no getFluidType(); the same description id the row label uses
+            setTranslator(fluid -> LocalizationUtils.format(fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId()));
         }
     }
 
@@ -180,25 +133,6 @@ public class RegistrySearchComponent<T> extends SearchComponentConfigurator<T> {
                     net.minecraft.world.entity.EntityType::getDescription
             ));
 
-            if (LDLib2.isJeiLoaded()) {
-                RegistrySearchComponent.JEISupport.ghostItem(this, itemStack ->
-                                Optional.ofNullable(getTypeFromEgg(itemStack)).map(filter::test).orElse(false),
-                        itemStack -> Optional.ofNullable(getTypeFromEgg(itemStack)).filter(filter)
-                                .ifPresent(entityType -> setValue(entityType, true)));
-            }
-            if (LDLib2.isReiLoaded()) {
-                RegistrySearchComponent.REISupport.ghostItem(this, itemStack ->
-                                Optional.ofNullable(getTypeFromEgg(itemStack)).map(filter::test).orElse(false),
-                        itemStack -> Optional.ofNullable(getTypeFromEgg(itemStack)).filter(filter)
-                                .ifPresent(entityType -> setValue(entityType, true)));
-            }
-            if (LDLib2.isEmiLoaded()) {
-                RegistrySearchComponent.EMISupport.ghostItem(this, itemStack ->
-                                Optional.ofNullable(getTypeFromEgg(itemStack)).map(filter::test).orElse(false),
-                        itemStack -> Optional.ofNullable(getTypeFromEgg(itemStack)).filter(filter)
-                                .ifPresent(entityType -> setValue(entityType, true)));
-            }
-
             setTranslator(entityType -> LocalizationUtils.format(entityType.getDescriptionId()));
         }
 
@@ -211,116 +145,4 @@ public class RegistrySearchComponent<T> extends SearchComponentConfigurator<T> {
         }
     }
 
-    public static class JEISupport {
-        public static void ghostItem(UIElement element, Predicate<ItemStack> filter, Consumer<ItemStack> setter) {
-            LDLibJEIPlugin.ghostIngredient(element, VanillaTypes.ITEM_STACK,
-                    ingredient -> filter.test(ingredient.getIngredient()),
-                    setter);
-        }
-
-        public static void ghostFluid(UIElement element, Predicate<FluidStack> filter, Consumer<FluidStack> setter) {
-            LDLibJEIPlugin.ghostIngredient(element, NeoForgeTypes.FLUID_STACK,
-                    ingredient -> filter.test(ingredient.getIngredient()),
-                    setter);
-        }
-
-        public static void ghostBlock(UIElement element, Predicate<net.minecraft.world.level.block.Block> filter, Consumer<net.minecraft.world.level.block.Block> setter) {
-            ghostItem(element,itemStack -> {
-                if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    return filter.test(blockItem.getBlock());
-                }
-                return false;
-            }, itemStack -> {
-                if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    setter.accept(blockItem.getBlock());
-                }
-            });
-        }
-    }
-
-    // region XEI Supports
-    public static class REISupport {
-        public static void ghostItem(UIElement element, Predicate<ItemStack> filter, Consumer<ItemStack> setter) {
-            LDLibREIPlugin.draggableStackBounds(element,
-                    VanillaEntryTypes.ITEM,
-                    stack -> filter.test(stack.getValue()));
-            LDLibREIPlugin.acceptDraggableStack(element,
-                    VanillaEntryTypes.ITEM,
-                    stack -> filter.test(stack.getValue()),
-                    stack -> setter.accept(stack.getValue()));
-        }
-
-        public static void ghostFluid(UIElement element, Predicate<FluidStack> filter, Consumer<FluidStack> setter) {
-            LDLibREIPlugin.draggableStackBounds(element,
-                    VanillaEntryTypes.FLUID,
-                    stack -> filter.test(FluidStackHooksForge.toForge(stack.getValue())));
-            LDLibREIPlugin.acceptDraggableStack(element,
-                    VanillaEntryTypes.FLUID,
-                    stack -> filter.test(FluidStackHooksForge.toForge(stack.getValue())),
-                    stack -> setter.accept(FluidStackHooksForge.toForge(stack.getValue())));
-        }
-
-        public static void ghostBlock(UIElement element, Predicate<net.minecraft.world.level.block.Block> filter, Consumer<net.minecraft.world.level.block.Block> setter) {
-            ghostItem(element,itemStack -> {
-                if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    return filter.test(blockItem.getBlock());
-                }
-                return false;
-            }, itemStack -> {
-                if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    setter.accept(blockItem.getBlock());
-                }
-            });
-        }
-
-    }
-
-    public static class EMISupport {
-        public static void ghostItem(UIElement element, Predicate<ItemStack> filter, Consumer<ItemStack> setter) {
-            LDLibEMIPlugin.renderDragHandler(element,
-                    dragged -> dragged instanceof ItemEmiStack item && filter.test(item.getItemStack()));
-            LDLibEMIPlugin.dropStackHandler(element,
-                    dragged -> dragged instanceof ItemEmiStack item && filter.test(item.getItemStack()),
-                    dragged -> {
-                        if (dragged instanceof ItemEmiStack item) {
-                            setter.accept(item.getItemStack());
-                        }
-                    });
-        }
-
-        public static void ghostFluid(UIElement element, Predicate<FluidStack> filter, Consumer<FluidStack> setter) {
-            LDLibEMIPlugin.renderDragHandler(element,
-                    dragged -> dragged instanceof FluidEmiStack fluid && filter.test(new FluidStack(
-                            ((net.minecraft.world.level.material.Fluid) fluid.getKey()).builtInRegistryHolder(),
-                            Math.max(1000, (int) fluid.getAmount()),
-                            fluid.getComponentChanges())));
-            LDLibEMIPlugin.dropStackHandler(element,
-                    dragged -> dragged instanceof FluidEmiStack fluid && filter.test(new FluidStack(
-                            ((net.minecraft.world.level.material.Fluid) fluid.getKey()).builtInRegistryHolder(),
-                            Math.max(1000, (int) fluid.getAmount()),
-                            fluid.getComponentChanges())),
-                    dragged -> {
-                        if (dragged instanceof FluidEmiStack fluid) {
-                            var fluidstack = new FluidStack(
-                                    ((net.minecraft.world.level.material.Fluid) fluid.getKey()).builtInRegistryHolder(),
-                                    Math.max(1000, (int) fluid.getAmount()),
-                                    fluid.getComponentChanges());
-                            setter.accept(fluidstack);
-                        }
-                    });
-        }
-
-        public static void ghostBlock(UIElement element, Predicate<net.minecraft.world.level.block.Block> filter, Consumer<net.minecraft.world.level.block.Block> setter) {
-            ghostItem(element,itemStack -> {
-                if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    return filter.test(blockItem.getBlock());
-                }
-                return false;
-            }, itemStack -> {
-                if (itemStack.getItem() instanceof BlockItem blockItem) {
-                    setter.accept(blockItem.getBlock());
-                }
-            });
-        }
-    }
 }

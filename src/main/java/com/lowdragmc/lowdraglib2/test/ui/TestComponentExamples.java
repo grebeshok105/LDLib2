@@ -43,7 +43,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
+import dev.architectury.fluid.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -281,7 +281,7 @@ public class TestComponentExamples implements IScreenTest {
                 new ItemSlot(),
                 new ItemSlot().setItem(Items.APPLE.getDefaultInstance()),
                 new FluidSlot(),
-                new FluidSlot().setFluid(new FluidStack(Fluids.LAVA, 1000))
+                new FluidSlot().setFluid(FluidStack.create(Fluids.LAVA, 1000L))
         );
     }
 

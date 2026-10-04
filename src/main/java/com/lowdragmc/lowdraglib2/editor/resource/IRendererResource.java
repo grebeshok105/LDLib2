@@ -14,6 +14,7 @@ import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
+import com.lowdragmc.lowdraglib2.math.Size;
 import com.lowdragmc.lowdraglib2.utils.data.BlockInfo;
 import com.lowdragmc.lowdraglib2.utils.virtuallevel.TrackedDummyWorld;
 import net.minecraft.client.Minecraft;
@@ -36,7 +37,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
-@KJSBindings
 public class IRendererResource extends Resource<IRenderer> {
     public static final IRendererResource INSTANCE = new IRendererResource();
     private final Set<ResourceProviderContainer<IRenderer>> openedContainers = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));

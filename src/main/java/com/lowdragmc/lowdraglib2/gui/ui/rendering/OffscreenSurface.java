@@ -3,8 +3,8 @@ package com.lowdragmc.lowdraglib2.gui.ui.rendering;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * render text at the wrong weight and spacing. Sharing the scale keeps every existing pixel
  * calculation valid; only the framebuffer size differs.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class OffscreenSurface implements UISurface {
 
     @Nullable

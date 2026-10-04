@@ -1,8 +1,8 @@
 package com.lowdragmc.lowdraglib2.uitest.input;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.lowdragmc.lowdraglib2.uitest.InputMode;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * {@link InputMode#REAL}: move the OS cursor and let Minecraft's own {@code MouseHandler} deliver
@@ -22,7 +22,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * ignores {@code glfwSetCursorPos} on an unfocused one. Every other mode runs happily in the
  * background; see {@link com.lowdragmc.lowdraglib2.gui.ui.utils.CursorState}.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class RealInputDriver extends SyntheticInputDriver {
 
     @Override

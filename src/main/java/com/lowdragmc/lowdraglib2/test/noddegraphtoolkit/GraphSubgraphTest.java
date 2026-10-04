@@ -18,18 +18,14 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.model.variable.VariableDeclarat
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphSubgraphTest {
 
     // ------------------------------------------------------------------
     // 1. Local subgraph: full round-trip preserves structure + parent link
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void localSubgraphSerializationRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start localSubgraphSerializationRoundTrip");
@@ -110,7 +106,6 @@ public class GraphSubgraphTest {
     // 2. External subgraph: portCache restores port shape when unresolvable
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void externalSubgraphPortCacheSurvives(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start externalSubgraphPortCacheSurvives");
@@ -177,7 +172,6 @@ public class GraphSubgraphTest {
     // 3. Variable modifier changes drive outer port direction
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portsFollowVariableModifiers(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start portsFollowVariableModifiers");
 
@@ -226,7 +220,6 @@ public class GraphSubgraphTest {
     //    type when the variable's data type changes.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portsTrackVariableTypeChanges(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start portsTrackVariableTypeChanges");
 
@@ -273,7 +266,6 @@ public class GraphSubgraphTest {
     // 5. Variable deletion: port disappears
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void deletingExposedVariableRemovesOuterPort(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start deletingExposedVariableRemovesOuterPort");
 
@@ -300,7 +292,6 @@ public class GraphSubgraphTest {
     // 6. Nested local subgraphs: 3 levels round-trip, parent pointers rebuilt
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void nestedLocalSubgraphSerialization(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start nestedLocalSubgraphSerialization");
@@ -353,7 +344,6 @@ public class GraphSubgraphTest {
     // 7. External save broadcast: SubgraphRegistry forwards path-save events
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void externalSaveBroadcastReDefinesPorts(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start externalSaveBroadcastReDefinesPorts");
 
@@ -399,7 +389,6 @@ public class GraphSubgraphTest {
     // 8. Extract selection to subgraph: crossing wires get auto-variables and reconnects
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void extractSelectionToLocalSubgraph(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start extractSelectionToLocalSubgraph");
@@ -512,7 +501,6 @@ public class GraphSubgraphTest {
     // 8b. Heterogeneous selection: wires ignored; placemats + stickynotes moved into subgraph
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void extractAcceptsPlacematAndStickyNote(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start extractAcceptsPlacematAndStickyNote");
@@ -565,7 +553,6 @@ public class GraphSubgraphTest {
     // 8c. Placemat with NON-selected contained node is rejected
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void extractRejectsPlacematWithExternalNode(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -598,7 +585,6 @@ public class GraphSubgraphTest {
     //     into the newly created subgraph (nested local subgraph survives the extract).
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void extractTransplantsLocalSubgraphReference(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -657,7 +643,6 @@ public class GraphSubgraphTest {
     //     even when the listener isn't a GraphModel.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void subgraphRegistryListenerReceivesBroadcast(GameTestHelper helper) {
         var path = new FilePath("test/registry_listener.tag");
         var received = new IResourcePath[1];
@@ -686,7 +671,6 @@ public class GraphSubgraphTest {
     //     consumers (verified via the resolver-state-mutation behavior).
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void resolverSaveDefaultIsNoOp(GameTestHelper helper) {
         // Just exercise the default impl — should not throw.
         IGraphReferenceResolver readOnly = p -> null;
@@ -700,7 +684,6 @@ public class GraphSubgraphTest {
     //     the other.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void copyPasteLocalSubgraphInSameGraph(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start copyPasteLocalSubgraphInSameGraph");
@@ -775,7 +758,6 @@ public class GraphSubgraphTest {
     //     pipeline, the pasted node would dangle (target graph has no matching localSubGraphs entry).
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void copyPasteLocalSubgraphCrossGraph(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start copyPasteLocalSubgraphCrossGraph");
@@ -844,7 +826,6 @@ public class GraphSubgraphTest {
     //    must deserialize cleanly.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void preSubgraphNbtIsForwardCompatible(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -876,7 +857,6 @@ public class GraphSubgraphTest {
     // 10. Graph API can globally disable variable exposure as subgraph ports.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void graphCanDisableSubgraphVariablePorts(GameTestHelper helper) {
         var root = new NoSubgraphVariableTestGraph();
         var sub = root.graphModel.createLocalSubgraphInstance();
@@ -902,7 +882,6 @@ public class GraphSubgraphTest {
     // 11. Graph API can restrict variable exposure to a single IO direction.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void graphCanRestrictSubgraphVariablePortDirection(GameTestHelper helper) {
         var root = new InputOnlySubgraphVariableTestGraph();
         var sub = root.graphModel.createLocalSubgraphInstance();

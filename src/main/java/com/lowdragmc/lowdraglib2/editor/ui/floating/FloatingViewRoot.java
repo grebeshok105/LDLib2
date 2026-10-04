@@ -17,8 +17,8 @@ import dev.vfyjxf.taffy.style.FlexDirection;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
  * fledged dock host: it has tabs, it can be split, and views can be dragged between its panes with
  * the code that already does that in the editor.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class FloatingViewRoot extends UIElement implements EditorHost {
 
     public static final int TITLE_BAR_HEIGHT = 15;

@@ -35,7 +35,8 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import com.lowdragmc.lowdraglib2.utils.INBTSerializable;
+import org.appliedenergistics.yoga.YogaEdge;
 import org.jetbrains.annotations.UnknownNullability;
 import org.joml.*;
 
@@ -50,7 +51,7 @@ import java.util.stream.Stream;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 
-public class LDShaderHolder implements IConfigurable, INBTSerializable<CompoundTag>, AutoCloseable {
+public class LDShaderHolder implements IConfigurable, AutoCloseable {
     public final static String SHADER_UID_DEFINE = "LD_SHADER_%d";
     private final static AtomicInteger SHADER_ID = new AtomicInteger();
     /** Bumped when the {@code hdrUniforms} payload shape changes; absent means pre-HDR data. */
@@ -258,7 +259,6 @@ public class LDShaderHolder implements IConfigurable, INBTSerializable<CompoundT
         return null;
     }
 
-    @Override
     public @UnknownNullability CompoundTag serializeNBT(@Nonnull HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         // uniform
@@ -304,7 +304,6 @@ public class LDShaderHolder implements IConfigurable, INBTSerializable<CompoundT
         return tag;
     }
 
-    @Override
     public void deserializeNBT(@Nonnull HolderLookup.Provider provider, @Nonnull CompoundTag tag) {
         samplerCache.clear();
         dynamicSampler.clear();

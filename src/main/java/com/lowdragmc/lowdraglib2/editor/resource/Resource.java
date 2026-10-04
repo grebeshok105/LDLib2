@@ -10,13 +10,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 
-import net.neoforged.fml.ModLoader;
 import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.common.NeoForge;
 
 public abstract class Resource<T> {
     public enum DisplayMode {
@@ -67,8 +65,7 @@ public abstract class Resource<T> {
         resourceInstance.addBuiltinProvider(global);
 
         // send an Event to register built resources
-        var event = new EditorResourceEvent.LoadBuiltin(resourceInstance);
-        ModLoader.postEvent(event);
+        EditorResourceEvent.LOAD_BUILTIN.invoker().onLoad(resourceInstance);
     }
 
     /**

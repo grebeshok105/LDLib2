@@ -6,11 +6,11 @@ import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.client.gui.font.providers.BitmapProvider;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.io.InputStream;
 
 /**
@@ -21,7 +21,7 @@ import java.io.InputStream;
  * used, so a resource pack that ships genuinely multi coloured bitmap glyphs renders as a solid silhouette;
  * every vanilla sheet is white with alpha, so this is not visible in practice.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class BitmapSdfSource implements GlyphSource {
     /**
      * Bitmap fonts are only 8 pixels tall, so the mask is enlarged before the distance transform to give the

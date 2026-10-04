@@ -1,13 +1,11 @@
 package com.lowdragmc.lowdraglib2.gui.ui.event;
 
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-@KJSBindings
 public final class UIEventDispatcher {
     /**
      * Dispatches the given {@link UIEvent} to its target element and through the event phases,

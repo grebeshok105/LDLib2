@@ -1,14 +1,17 @@
 package com.lowdragmc.lowdraglib2.misc;
 
+import com.lowdragmc.lowdraglib2.utils.fluids.IFluidHandlerModifiable;
+import com.lowdragmc.lowdraglib2.utils.fluids.FluidAction;
+
 import com.google.common.util.concurrent.Runnables;
 import com.lowdragmc.lowdraglib2.syncdata.IContentChangeAware;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import com.lowdragmc.lowdraglib2.utils.INBTSerializable;
+import dev.architectury.fluid.FluidStack;
+import com.lowdragmc.lowdraglib2.utils.fluids.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
@@ -24,7 +27,8 @@ public class FluidStorage extends FluidTank implements INBTSerializable<Compound
     }
 
     public FluidStorage(int capacity, Predicate<FluidStack> validator) {
-        super(capacity, validator);
+        super(capacity);
+        this.validator = validator;
     }
 
     @Override

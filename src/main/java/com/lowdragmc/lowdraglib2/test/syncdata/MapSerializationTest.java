@@ -15,13 +15,10 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector3f;
 
 import java.util.*;
 
-@GameTestHolder(LDLib2.MOD_ID)
 public class MapSerializationTest {
 
     public static class NestedReadOnly implements IPersistedSerializable {
@@ -151,7 +148,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void directKDirectV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -172,7 +168,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void directKCustomV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -196,7 +191,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void enumKVectorV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -222,7 +216,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void directKReadOnlyV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -258,7 +251,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyManagedMap_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -291,7 +283,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyManagedListMap_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -334,7 +325,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyManagedListMap_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -367,7 +357,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void bufferRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -398,7 +387,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void emptyMap_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -417,7 +405,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void wireFormatShape_nbt(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -442,7 +429,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyKDirectV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -476,7 +462,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyKReadOnlyV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -504,7 +489,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyKDirectV_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -532,7 +516,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void readOnlyKReadOnlyV_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -560,7 +543,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void directKReadOnlyV_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new MapHolder();
@@ -601,7 +583,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_directKReadOnlyV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();
@@ -629,7 +610,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_directKReadOnlyV_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();
@@ -654,7 +634,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_directKListV_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();
@@ -690,7 +669,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_directKListV_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();
@@ -718,7 +696,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_collection_readOnlyChild_nbtRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();
@@ -742,7 +719,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_collection_readOnlyChild_bufRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();
@@ -763,7 +739,6 @@ public class MapSerializationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void autoFabricate_fallsBackToError_whenNoCtor(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var src = new AutoFabHolder();

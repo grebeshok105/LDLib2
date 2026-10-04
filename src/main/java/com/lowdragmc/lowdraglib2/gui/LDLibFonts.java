@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.function.Supplier;
 
 @UtilityClass
@@ -31,7 +31,7 @@ public final class LDLibFonts {
      * is turned off in the client config. Both report the same advances, so switching between them never
      * shifts layout, carets or selections.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static Font font() {
         return LDLibClientConfig.isSmoothFont() ? LDFontManager.INSTANCE.font() : Minecraft.getInstance().font;
     }
@@ -45,7 +45,7 @@ public final class LDLibFonts {
      *
      * @return the pen position after the text
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static int drawText(GuiGraphics graphics, Font font, Component text, float x, float y,
                                int color, boolean dropShadow) {
         // decomposing the component is a bidi pass of its own, and a component rebuilt every frame cannot
@@ -57,13 +57,13 @@ public final class LDLibFonts {
      * Same as {@link #drawText(GuiGraphics, Font, Component, float, float, int, boolean)}, keyed by the
      * sequence's identity. Only callers that hold onto the sequence between frames benefit from the cache.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static int drawText(GuiGraphics graphics, Font font, FormattedCharSequence text, float x, float y,
                                int color, boolean dropShadow) {
         return drawText(graphics, font, text, () -> text, x, y, color, dropShadow);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static int drawText(GuiGraphics graphics, Font font, Object key,
                                 Supplier<FormattedCharSequence> text,
                                 float x, float y, int color, boolean dropShadow) {

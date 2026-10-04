@@ -14,9 +14,7 @@ package com.lowdragmc.lowdraglib2.gui.util;
 //import net.minecraft.network.chat.Component;
 //import net.minecraft.network.chat.TextComponent;
 //import net.minecraft.util.FastColor;
-//import net.neoforged.neoforge.api.distmarker.Dist;
-//import net.neoforged.neoforge.api.distmarker.OnlyIn;
-//import org.apache.http.util.Asserts;
+//////import org.apache.http.util.Asserts;
 //
 //import java.util.Arrays;
 //
@@ -25,7 +23,7 @@ package com.lowdragmc.lowdraglib2.gui.util;
 // * @data 2022/12/11
 // * @implNote Eyedropper
 // */
-//@OnlyIn(Dist.CLIENT)
+//@Environment(EnvType.CLIENT)
 //public enum Eyedropper {
 //    DOWNLOAD {
 //
@@ -254,3 +252,5 @@ package com.lowdragmc.lowdraglib2.gui.util;
 //    }
 //
 //}
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;

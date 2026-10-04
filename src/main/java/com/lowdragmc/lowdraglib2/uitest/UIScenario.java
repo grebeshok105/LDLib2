@@ -1,9 +1,9 @@
 package com.lowdragmc.lowdraglib2.uitest;
 
 import com.lowdragmc.lowdraglib2.registry.ILDLRegisterClient;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.function.Supplier;
 
 /**
@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * }
  * }</pre>
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public interface UIScenario extends ILDLRegisterClient<UIScenario, Supplier<UIScenario>> {
 
     /** Pass this to {@code @LDLRegisterClient(registry = ...)}. */

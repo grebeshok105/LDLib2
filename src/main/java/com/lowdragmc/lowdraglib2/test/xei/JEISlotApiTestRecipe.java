@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.elements.ItemSlot;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
 import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
 import com.lowdragmc.lowdraglib2.integration.xei.IngredientIO;
+import dev.architectury.fluid.FluidStack;
 import dev.vfyjxf.taffy.style.AlignContent;
 import dev.vfyjxf.taffy.style.FlexDirection;
 import net.minecraft.ChatFormatting;
@@ -21,7 +22,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public enum JEISlotApiTestRecipe {
     private static ModularUI externalRendering() {
         var slot = new FluidSlot();
         slot.setCapacity(4000);
-        slot.setFluid(new FluidStack(Fluids.WATER, 1000));
+        slot.setFluid(FluidStack.create(Fluids.WATER, 1000));
         slot.layout(layout -> layout.width(72).height(24).paddingAll(2));
         slot.style(style -> style.backgroundTexture(new RectTexture()
                 .setColor(0xff25364d)

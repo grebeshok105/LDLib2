@@ -1,8 +1,8 @@
 package com.lowdragmc.lowdraglib2.uitest.input;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.lowdragmc.lowdraglib2.uitest.InputMode;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * {@link InputMode#SYNTHETIC}: refresh the hover for the target position, then call the matching
@@ -19,7 +19,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * never calls {@code requestFocus} (so focus, {@code __focused__} and keyboard routing all break).
  * That path is exposed only as an explicit escape hatch for exotic event types.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class SyntheticInputDriver extends InputDriver {
 
     @Override

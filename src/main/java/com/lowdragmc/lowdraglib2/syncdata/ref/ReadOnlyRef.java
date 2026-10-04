@@ -10,14 +10,6 @@ import com.mojang.serialization.JavaOps;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
-
-/**
- * ReadonlyRef represents a reference to a nonnull value, the value is readonly and the instance won't change.
- *  <br>
- *  It will store the old value mark to compare with the new value mark every update.
- *  Please implement {@link IMarkFunction} for the accessor.
- *  If the {@link IMarkFunction} is not implemented, it will use codec to store the mark in a type of {@link com.mojang.serialization.JavaOps}
- */
 @SuppressWarnings("unchecked")
 public class ReadOnlyRef<TYPE> extends ReadOnlyManagedRef<TYPE> {
     private @Nullable Object oldValueMark;

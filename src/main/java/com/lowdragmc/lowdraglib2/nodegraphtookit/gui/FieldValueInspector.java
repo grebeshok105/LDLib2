@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import com.lowdragmc.lowdraglib2.utils.INBTSerializable;
 
 public class FieldValueInspector extends UIElement {
     public final Label fieldName = new Label();

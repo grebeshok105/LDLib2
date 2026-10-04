@@ -1,10 +1,10 @@
 package com.lowdragmc.lowdraglib2.client.renderer.impl;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib2.client.renderer.IBlockRendererProvider;
-import com.lowdragmc.lowdraglib2.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib2.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib2.client.renderer.*;
 import com.lowdragmc.lowdraglib2.configurator.ui.Configurator;
 import com.lowdragmc.lowdraglib2.configurator.ui.ConfiguratorGroup;
 import com.lowdragmc.lowdraglib2.configurator.annotation.ConfigSetter;
@@ -17,8 +17,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.vfyjxf.taffy.style.AlignItems;
 import lombok.Getter;
 import net.minecraft.client.renderer.RenderType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -32,9 +30,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.common.util.TriState;
 
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
@@ -48,21 +43,18 @@ public class IModelRenderer implements IRenderer {
     @Getter
     @Configurable
     protected ResourceLocation modelLocation;
-
-    @OnlyIn(Dist.CLIENT)
     @Nullable
     protected volatile BakedModel itemModel;
-    @OnlyIn(Dist.CLIENT)
     private volatile boolean itemModelInitialized;
 
     // resolved once per renderer to avoid re-acquiring the bakery lock on every bake
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     protected volatile UnbakedModel cachedUnbakedModel;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private volatile boolean unbakedModelInitialized;
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected volatile Map<ModelStateCacheKey, BakedModel> modelCaches;
 
     protected IModelRenderer() {
@@ -99,17 +91,16 @@ public class IModelRenderer implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     public TextureAtlasSprite getParticleTexture(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, ModelData modelData) {
         BakedModel model = getItemBakedModel();
         if (model == null) {
             return IRenderer.super.getParticleTexture(level, pos, modelData);
         }
-        return model.getParticleIcon(modelData);
+        return model.getParticleIcon();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     protected UnbakedModel getModel() {
         if (!unbakedModelInitialized) {
@@ -130,13 +121,12 @@ public class IModelRenderer implements IRenderer {
         return cachedUnbakedModel;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected boolean isTopLevelModelMissing() {
         return ModelFactory.getTopLevelModel(ModelResourceLocation.standalone(modelLocation)) == null;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void renderItem(ItemStack stack,
                            ItemDisplayContext transformType,
                            boolean leftHand, PoseStack poseStack,
@@ -154,7 +144,6 @@ public class IModelRenderer implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean useBlockLight(ItemStack stack) {
         var model = getItemBakedModel(stack);
         if (model != null) {
@@ -164,7 +153,6 @@ public class IModelRenderer implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public TriState useAO() {
         var model = getItemBakedModel();
         if (model != null) {
@@ -179,22 +167,18 @@ public class IModelRenderer implements IRenderer {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public List<BakedQuad> renderModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
         var ibakedmodel = getBlockBakedModel(level, pos, state);
         if (ibakedmodel == null) return Collections.emptyList();
-        return ibakedmodel.getQuads(state, side, rand, data, renderType);
+        return ibakedmodel.getQuads(state, side, rand);
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public ChunkRenderTypeSet getRenderTypes(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource rand, ModelData modelData) {
         var ibakedmodel = getBlockBakedModel(level, pos, state);
-        if (ibakedmodel != null) return ibakedmodel.getRenderTypes(state, rand, modelData);
+        if (ibakedmodel != null) return com.lowdragmc.lowdraglib2.client.renderer.ChunkRenderTypeSet.of(net.minecraft.client.renderer.ItemBlockRenderTypes.getChunkRenderType(state));
         return IRenderer.super.getRenderTypes(level, pos, state, rand, modelData);
     }
-
-    @OnlyIn(Dist.CLIENT)
     @Nullable
     protected BakedModel getItemBakedModel() {
         if (!itemModelInitialized) {
@@ -213,14 +197,10 @@ public class IModelRenderer implements IRenderer {
         }
         return itemModel;
     }
-
-    @OnlyIn(Dist.CLIENT)
     @Nullable
     protected BakedModel getItemBakedModel(ItemStack itemStack) {
         return getItemBakedModel();
     }
-
-    @OnlyIn(Dist.CLIENT)
     @Nullable
     protected BakedModel getBlockBakedModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state) {
         if (level != null && pos != null && state != null && state.getBlock() instanceof IBlockRendererProvider provider) {
@@ -232,7 +212,7 @@ public class IModelRenderer implements IRenderer {
         return modelCaches.computeIfAbsent(ModelStateCacheKey.from(BlockModelRotation.X0_Y0), key -> bakeBlockModel(BlockModelRotation.X0_Y0));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     private BakedModel bakeBlockModel(ModelState modelState) {
         var model = getModel();
@@ -242,22 +222,17 @@ public class IModelRenderer implements IRenderer {
                 this::materialMapping,
                 modelState);
     }
-
-
-    @OnlyIn(Dist.CLIENT)
     protected TextureAtlasSprite materialMapping(Material material) {
         return material.sprite();
     }
     
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onAdditionalModel(Consumer<ModelResourceLocation> registry) {
-        registry.accept(ModelResourceLocation.standalone(modelLocation));
+    public void onAdditionalModel(Consumer<ResourceLocation> registry) {
+        registry.accept(modelLocation);
         clearCache();
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean isGui3d() {
         var model = getItemBakedModel();
         if (model == null) {
@@ -271,8 +246,6 @@ public class IModelRenderer implements IRenderer {
         this.modelLocation = modelLocation;
         clearCache();
     }
-
-    @OnlyIn(Dist.CLIENT)
     public void updateModelWithReloadingResource(ResourceLocation modelLocation) {
         updateModelWithoutReloadingResource(modelLocation);
         if (isTopLevelModelMissing()) {
@@ -280,13 +253,12 @@ public class IModelRenderer implements IRenderer {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected void reloadResourcesAndRefreshRendererContainers() {
         IRendererResource.INSTANCE.reloadResourcesAndRefreshOpenedContainers();
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void buildConfigurator(ConfiguratorGroup father) {
         IRenderer.super.buildConfigurator(father);
         var buttonConfigurator = new Configurator();
@@ -322,14 +294,14 @@ public class IModelRenderer implements IRenderer {
         father.addConfigurators(buttonConfigurator.addInlineChildren(selectButton, reloadButton));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected record ModelStateCacheKey(TransformationKey rotation, boolean uvLocked) {
         static ModelStateCacheKey from(ModelState modelState) {
             return new ModelStateCacheKey(TransformationKey.from(modelState.getRotation()), modelState.isUvLocked());
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected record TransformationKey(
             float m00, float m01, float m02, float m03,
             float m10, float m11, float m12, float m13,

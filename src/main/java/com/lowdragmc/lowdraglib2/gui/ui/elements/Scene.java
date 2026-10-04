@@ -10,9 +10,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
 import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
-import com.lowdragmc.lowdraglib2.integration.xei.emi.LDLibEMIPlugin;
-import com.lowdragmc.lowdraglib2.integration.xei.jei.LDLibJEIPlugin;
-import com.lowdragmc.lowdraglib2.integration.xei.rei.LDLibREIPlugin;
 import com.lowdragmc.lowdraglib2.math.Size;
 import com.lowdragmc.lowdraglib2.math.interpolate.Eases;
 import com.lowdragmc.lowdraglib2.math.interpolate.Interpolator;
@@ -21,13 +18,9 @@ import com.lowdragmc.lowdraglib2.utils.data.BlockPosFace;
 import com.lowdragmc.lowdraglib2.utils.virtuallevel.TrackedDummyWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.stack.EmiStackInteraction;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import me.shedaniel.rei.api.common.util.EntryStacks;
-import mezz.jei.api.constants.VanillaTypes;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -42,8 +35,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import org.appliedenergistics.yoga.YogaOverflow;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -58,14 +52,13 @@ import java.util.function.Consumer;
 @Accessors(chain = true)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@KJSBindings
 @LDLRegister(name = "scene", group = "misc", registry = "ldlib2:ui_element")
 public class Scene extends UIElement {
     private static final Object ROTATION_DRAGGING = new Object();
     private static final Object PAN_DRAGGING = new Object();
     @Nullable
-    @OnlyIn(Dist.CLIENT)
-    @Getter(onMethod_ = @OnlyIn(Dist.CLIENT))
+    @Environment(EnvType.CLIENT)
+    @Getter(onMethod_ = @Environment(EnvType.CLIENT))
     protected WorldSceneRenderer renderer;
     @Nullable
     @Getter
@@ -183,7 +176,7 @@ public class Scene extends UIElement {
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Scene setBeforeWorldRender(Consumer<Scene> beforeWorldRender) {
         this.beforeWorldRender = beforeWorldRender;
         if (this.beforeWorldRender != null && renderer != null) {
@@ -214,7 +207,7 @@ public class Scene extends UIElement {
     }
 
     @Nullable
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public ParticleManager getParticleManager() {
         if (renderer == null) return null;
         return renderer.getParticleManager();
@@ -251,7 +244,7 @@ public class Scene extends UIElement {
     /**
      * Creates a scene with the given world and whether to use FBO scene renderer.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public final Scene createScene(Level world, boolean useFBOSceneRenderer, @Nullable Size fboSize) {
         releaseRendererResource();
         core.clear();
@@ -292,7 +285,7 @@ public class Scene extends UIElement {
     }
 
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public final Scene createScene(Level world) {
         return createScene(world, false, null);
     }
@@ -341,7 +334,7 @@ public class Scene extends UIElement {
         return setRenderedCore(blocks, null);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Scene setClipContext(ClipContext.Block block, ClipContext.Fluid fluid) {
         this.clipBlock = block;
         this.clipFluid = fluid;
@@ -357,26 +350,16 @@ public class Scene extends UIElement {
      * the hovered block's {@link #lastHoverItem} becomes the ingredient under the cursor
      * for XEI recipe lookup (R/U keys). Runtime toggle via {@link #setAllowXEILookup(boolean)}.
      */
+    // fabric: xei (JEI/REI/EMI) integrations are not ported; kept as a no-op stub
     public Scene xeiLookup() {
-        if (LDLib2.isClient() && !LDLib2.isServer()) {
-            if (LDLib2.isJeiLoaded()) {
-                JEISupport.clickableIngredient(this);
-            }
-            if (LDLib2.isReiLoaded()) {
-                REISupport.focusedStack(this);
-            }
-            if (LDLib2.isEmiLoaded()) {
-                EMISupport.stackProvider(this);
-            }
-        }
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected void renderBeforeBatchEnd(MultiBufferSource bufferSource, float partialTicks) {
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void renderBlockOverLay(WorldSceneRenderer renderer) {
         if (renderer == null || dummyWorld == null || core == null || core.isEmpty()) {
             return;
@@ -415,7 +398,7 @@ public class Scene extends UIElement {
             var mui = getModularUI();
             if (lastHoverPosFace != null && hit != null && mui != null && mui.player != null) {
                 var state = dummyWorld.getBlockState(lastHoverPosFace.pos());
-                lastHoverItem = state.getBlock().getCloneItemStack(state, hit, dummyWorld, lastHoverPosFace.pos(), mui.player);
+                lastHoverItem = state.getBlock().getCloneItemStack(dummyWorld, lastHoverPosFace.pos(), state);
             }
         }
 
@@ -437,12 +420,12 @@ public class Scene extends UIElement {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void drawFacingBorder(PoseStack poseStack, BlockPosFace posFace, int color) {
         drawFacingBorder(poseStack, posFace, color, 0);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void drawFacingBorder(PoseStack poseStack, BlockPosFace posFace, int color, int inner) {
         poseStack.pushPose();
         RenderSystem.disableDepthTest();
@@ -455,7 +438,7 @@ public class Scene extends UIElement {
         poseStack.popPose();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static void drawBorder(PoseStack poseStack, int x, int y, int width, int height, int color, int border) {
         drawSolidRect(poseStack,x - border, y - border, width + 2 * border, border, color);
         drawSolidRect(poseStack,x - border, y + height, width + 2 * border, border, color);
@@ -463,13 +446,13 @@ public class Scene extends UIElement {
         drawSolidRect(poseStack,x + width, y, border, height, color);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static void drawSolidRect(PoseStack poseStack, int x, int y, int width, int height, int color) {
         fill(poseStack, x, y, x + width, y + height, 0, color);
         RenderSystem.enableBlend();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private static void fill(PoseStack matrices, int x1, int y1, int x2, int y2, int z, int color) {
         Matrix4f matrix4f = matrices.last().pose();
         int i;
@@ -681,38 +664,4 @@ public class Scene extends UIElement {
 //        }
     }
 
-    // region XEI Supports
-    public static class JEISupport {
-        public static void clickableIngredient(Scene scene) {
-            LDLibJEIPlugin.clickableIngredient(scene, () -> {
-                if (!scene.allowXEILookup) return null;
-                var current = scene.lastHoverItem;
-                if (current == null || current.isEmpty()) return null;
-                return LDLibJEIPlugin.createTypedIngredient(VanillaTypes.ITEM_STACK, current).orElse(null);
-            });
-        }
-    }
-
-    public static class REISupport {
-        public static void focusedStack(Scene scene) {
-            LDLibREIPlugin.focusedStack(scene, () -> {
-                if (!scene.allowXEILookup) return null;
-                var current = scene.lastHoverItem;
-                if (current == null || current.isEmpty()) return null;
-                return EntryStacks.of(current);
-            });
-        }
-    }
-
-    public static class EMISupport {
-        public static void stackProvider(Scene scene) {
-            LDLibEMIPlugin.stackProvider(scene, () -> {
-                if (!scene.allowXEILookup) return null;
-                var current = scene.lastHoverItem;
-                if (current == null || current.isEmpty()) return null;
-                return new EmiStackInteraction(EmiStack.of(current), null, false);
-            });
-        }
-    }
-    // endregion
 }

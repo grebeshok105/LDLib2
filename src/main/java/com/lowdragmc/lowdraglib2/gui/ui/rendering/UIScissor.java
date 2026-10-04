@@ -2,8 +2,8 @@ package com.lowdragmc.lowdraglib2.gui.ui.rendering;
 
 import com.lowdragmc.lowdraglib2.math.Rect;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
  * call with the right numbers. On the game window this is a no-op after one boolean check, so the
  * on-screen path is untouched.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class UIScissor {
 
     private UIScissor() {

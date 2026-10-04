@@ -6,8 +6,8 @@ import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Matrix4f;
 
 /**
@@ -27,7 +27,7 @@ import org.joml.Matrix4f;
  * The selected bucket is read by {@link LDFontSet#getGlyph} while text is being emitted. It is plain static
  * state because all of this happens on the render thread inside a single draw call.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class GlyphBucket {
     /**
      * Bucket value meaning "use the scalable distance field atlas".

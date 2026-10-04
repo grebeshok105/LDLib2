@@ -20,11 +20,11 @@ import net.minecraft.client.gui.font.glyphs.SpecialGlyphs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.function.Function;
 
 /**
@@ -39,7 +39,7 @@ import java.util.function.Function;
  * appends the unifont provider at the end, so a codepoint only degrades to the missing glyph box if even
  * unifont does not have it.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class LDFontSet extends FontSet {
     private static final RandomSource RANDOM = RandomSource.create();
     /**

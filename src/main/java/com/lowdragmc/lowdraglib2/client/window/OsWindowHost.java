@@ -1,13 +1,11 @@
 package com.lowdragmc.lowdraglib2.client.window;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Whatever fills an {@link OsWindow}. {@link OsWindowManager} drives one of these per frame in the
  * order {@link #drainInput()}, {@link #renderFrame(float)}, {@link #present()}.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public interface OsWindowHost {
 
     /**
@@ -49,3 +47,5 @@ public interface OsWindowHost {
     default void onDestroyed() {
     }
 }
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;

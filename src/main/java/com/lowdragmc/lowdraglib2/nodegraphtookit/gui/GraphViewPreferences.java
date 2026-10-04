@@ -6,7 +6,7 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.gui.wire.WireRouteStyle;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.neoforged.fml.loading.FMLLoader;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Files;
@@ -81,7 +81,7 @@ public final class GraphViewPreferences {
 
     static final Codec<Map<String, Entry>> CODEC = Codec.unboundedMap(Codec.STRING, Entry.CODEC);
 
-    /** Resolved on first use, never in a static initialiser: {@link FMLLoader} has no game path in a unit test. */
+    /** Resolved on first use, never in a static initialiser: {@link FabricLoader} has no game path in a unit test. */
     @Nullable
     private static Path file;
     @Nullable
@@ -98,7 +98,7 @@ public final class GraphViewPreferences {
 
     public static Path getFile() {
         if (file == null) {
-            file = FMLLoader.getGamePath().resolve("config").resolve(LDLib2.MOD_ID).resolve("graph_view.json");
+            file = FabricLoader.getInstance().getConfigDir().resolve(LDLib2.MOD_ID).resolve("graph_view.json");
         }
         return file;
     }

@@ -4,7 +4,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.ItemSlot;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvent;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import com.lowdragmc.lowdraglib2.registry.annotation.LDLRegister;
 import dev.vfyjxf.taffy.style.AlignContent;
 import dev.vfyjxf.taffy.style.FlexDirection;
@@ -14,7 +13,6 @@ import org.appliedenergistics.yoga.YogaEdge;
 
 import java.util.function.Consumer;
 
-@KJSBindings
 @LDLRegister(name = "inventory-slots", group = "inventory", registry = "ldlib2:ui_element")
 public class InventorySlots extends UIElement {
     public final Row[] rows = new Row[3];

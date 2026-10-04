@@ -2,15 +2,12 @@ package com.lowdragmc.lowdraglib2.uitest;
 
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.Platform;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * The frame pump, plus a watchdog so a hung game still produces a report.
  */
-@EventBusSubscriber(modid = LDLib2.MOD_ID, value = Dist.CLIENT)
 public final class UITestBootstrap {
 
     private static boolean bootstrapped;
@@ -25,8 +22,7 @@ public final class UITestBootstrap {
      * is on screen — and only resume if a human pressed escape. This still runs post-render, so
      * captures taken from it are valid.
      */
-    @SubscribeEvent
-    public static void onFrameRendered(RenderFrameEvent.Post event) {
+    public static void onFrameRendered() {
         // The scenario registry only exists in a dev environment, so outside one this hook can never
         // have anything to do — do not even class-load the runner on a production client.
         if (!Platform.isDevEnv()) return;

@@ -12,8 +12,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +22,10 @@ import java.io.IOException;
  * behavior down, and above all that references saved before the migration — absolute paths, from this
  * machine or another one, in any of the three historical codec layouts — still resolve.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class ResourcePathMigrationTest {
 
     /** A file inside the game directory becomes a "./" anchored relative path. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void absoluteUnderGameDirCollapses(GameTestHelper helper) {
         var file = new File(LDLib2.getAssetsDir(), "ldlib2/resources/global/x.color.nbt");
         var path = new FilePath(file).getPath();
@@ -42,7 +38,6 @@ public class ResourcePathMigrationTest {
 
     /** An absolute path saved on ANOTHER machine collapses to the same identity as the local file. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void foreignAbsoluteCollapses(GameTestHelper helper) {
         var local = new FilePath(new File(LDLib2.getAssetsDir(), "ldlib2/resources/global/x.color.nbt"));
         var foreign = new FilePath("/some/other/machine/ldlib2/assets/ldlib2/resources/global/x.color.nbt");
@@ -55,7 +50,6 @@ public class ResourcePathMigrationTest {
 
     /** The File based and the String based constructors produce equal, interchangeable keys. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void identityIsStable(GameTestHelper helper) {
         var file = new File(LDLib2.getAssetsDir(), "ldlib2/resources/global/x.color.nbt");
         var fromFile = new FilePath(file);
@@ -91,7 +85,6 @@ public class ResourcePathMigrationTest {
 
     /** A custom provider outside the game directory keeps its absolute path. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void outsideGameDirUnchanged(GameTestHelper helper) {
         var outside = new File(System.getProperty("java.io.tmpdir"), "ldlib-path-test/x.color.nbt").getAbsolutePath();
         var path = new FilePath(outside).getPath();
@@ -108,7 +101,6 @@ public class ResourcePathMigrationTest {
 
     /** Normalizing an already canonical path must not change it again. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void idempotent(GameTestHelper helper) {
         var candidates = new String[]{
                 new File(LDLib2.getAssetsDir(), "ldlib2/resources/global/x.color.nbt").getPath(),
@@ -128,7 +120,6 @@ public class ResourcePathMigrationTest {
 
     /** A canonical path resolves back to a file whose parent is the provider directory it came from. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void resolveFileRoundTrip(GameTestHelper helper) {
         var directory = new File(LDLib2.getAssetsDir(), "ldlib2/resources/global");
         var provider = new FileResourceProvider<>(ColorsResource.INSTANCE.getResourceInstance(), directory);
@@ -152,7 +143,6 @@ public class ResourcePathMigrationTest {
 
     /** Provider locations survive serialization, in the new form and in both legacy forms. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void providerNbtRoundTrip(GameTestHelper helper) {
         var instance = ColorsResource.INSTANCE.getResourceInstance();
         var inside = new File(LDLib2.getAssetsDir(), "ldlib2/resources/global");
@@ -192,7 +182,6 @@ public class ResourcePathMigrationTest {
 
     /** The resource pack view of a path still derives from the relative form. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void toResourceLocationStillDerives(GameTestHelper helper) {
         var path = new FilePath(new File(LDLib2.getAssetsDir(), "ldlib2/resources/global/x.color.nbt"));
         var expected = ResourceLocation.fromNamespaceAndPath("ldlib2", "resources/global/x.color.nbt");
@@ -205,7 +194,6 @@ public class ResourcePathMigrationTest {
 
     /** All three historical codec layouts decode, and all three land on the canonical identity. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void legacyCodecsStillDecode(GameTestHelper helper) {
         var file = new File(LDLib2.getAssetsDir(), "ldlib2/resources/global/x.color.nbt");
         var absolute = file.getPath().replace('\\', '/');

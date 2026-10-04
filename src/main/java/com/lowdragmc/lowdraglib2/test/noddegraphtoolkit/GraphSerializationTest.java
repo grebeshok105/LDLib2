@@ -18,18 +18,14 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphSerializationTest {
 
     /**
      * Tests basic serialization and deserialization of a graph with custom nodes, wires, constants, and variables.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void graphSerializationRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start Graph Serialization Round-Trip Test");
@@ -179,7 +175,6 @@ public class GraphSerializationTest {
      * Tests that an empty graph serializes and deserializes correctly.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void emptyGraphSerialization(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -202,7 +197,6 @@ public class GraphSerializationTest {
      * Tests that inputConstantsById (port default values) survive serialization.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portConstantsSerialization(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -270,7 +264,6 @@ public class GraphSerializationTest {
      * mod load order or dynamic types leave {@code ID_TO_TYPE} empty for a known class.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void typeHandleResolveFallsBackToClassForName(GameTestHelper helper) {
         var th = TypeHandle.create(TypeFallbackMarker.class.getName());
         var resolved = th.resolve();
@@ -293,7 +286,6 @@ public class GraphSerializationTest {
      * Tests that a variable's initializationModel round-trips, preserving its value.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void variableInitializationModelRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -332,7 +324,6 @@ public class GraphSerializationTest {
      * Tests that ConstantNodeModel deserialization preserves ownership and value.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void constantNodeOwnerAndValuePreserved(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -371,7 +362,6 @@ public class GraphSerializationTest {
      * default-count ports and the persisted in3..inN constants get dropped.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void optionDrivenPortCountSurvivesRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -431,7 +421,6 @@ public class GraphSerializationTest {
      * must round-trip the value entirely through the supplied Mojang Codec.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portCustomCodecRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -474,7 +463,6 @@ public class GraphSerializationTest {
      * than the runtime-mutated value.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portWithoutSerializationResetsToDefault(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -518,7 +506,6 @@ public class GraphSerializationTest {
      * the same node must still serialize normally.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portMissingAccessorSerializesGracefully(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -570,7 +557,6 @@ public class GraphSerializationTest {
      * {@code configuratorEnabled == false}, so the inspector skips building a UI row for it.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portWithoutConfiguratorFlagsModel(GameTestHelper helper) {
         var graph = new TestGraph();
         var node = graph.graphModel.createNodeModel(new CustomCodecTestNode(), new Vector2f(0, 0));
@@ -601,7 +587,6 @@ public class GraphSerializationTest {
      * Must: not throw, mark constant as deserializeFailed, drop incoming wires.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void evolutionCodecToNoCodec(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -654,7 +639,6 @@ public class GraphSerializationTest {
      * (not a failure). Constant should hold the load-side builder default, deserializeFailed=false.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void evolutionCodecToWithoutSerialization(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -698,7 +682,6 @@ public class GraphSerializationTest {
      * nothing to decode. Constant should hold load-side default, deserializeFailed=false.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void evolutionWithoutSerializationToCodec(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -741,7 +724,6 @@ public class GraphSerializationTest {
      * deserializeFailed=true, constant resets to load-side default.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void evolutionAccessorToCodec(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -784,7 +766,6 @@ public class GraphSerializationTest {
      * saved record-shaped NBT. Must mark failed and reset to load-side default.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void evolutionCodecToDifferentCodec(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -825,7 +806,6 @@ public class GraphSerializationTest {
      * must mark failed.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void evolutionCorruptValueTag(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -867,7 +847,6 @@ public class GraphSerializationTest {
      * path must NOT clobber the live value when there's no pending tag.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void codecPortSurvivesMultipleDefineNode(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -910,7 +889,6 @@ public class GraphSerializationTest {
      * warning entry per unique type (not N).
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portMissingAccessorWarnsOnce(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         com.lowdragmc.lowdraglib2.nodegraphtookit.model.constant.TypeConstant.clearWarnedTypesForTesting();
@@ -948,7 +926,6 @@ public class GraphSerializationTest {
      * this implicitly; this is the explicit named regression label.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void backwardCompatLegacyNbt(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -987,7 +964,6 @@ public class GraphSerializationTest {
      * stranding it. Simulated by scrambling only the serialized {@code fromPortUid}.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void wireRecoveryByPortId(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var graphModel = new TestGraph().graphModel;
@@ -1028,7 +1004,6 @@ public class GraphSerializationTest {
      * linger forever with no wire. Enforce the invariant "no wire ⇒ no missing port".
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void orphanMissingPortRemovedOnLoad(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var graphModel = new TestGraph().graphModel;
@@ -1073,7 +1048,6 @@ public class GraphSerializationTest {
      * port that only clears on reload.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void deletingWireRemovesMissingPort(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         var nodeA = graphModel.createNodeModel(new TestAddNode(), new Vector2f(0, 0));
@@ -1100,7 +1074,6 @@ public class GraphSerializationTest {
      * ports), so it must be DROPPED — not degraded to a lingering missing-port placeholder.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void variableIoReversalDropsWire(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         // OUTPUT-kind variable ⇒ WRITE modifier ⇒ the variable node's main port is an INPUT.
@@ -1127,7 +1100,6 @@ public class GraphSerializationTest {
      * unresolved connection to the user.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void missingPortReportedToGraphLogger(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         var node = graphModel.createNodeModel(new TestAddNode(), new Vector2f(0, 0));
@@ -1149,7 +1121,6 @@ public class GraphSerializationTest {
      * empty. Regression for the "delete wire, missing port stays" editor bug.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void removingMissingPortInvalidatesVisibleCache(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         var node = graphModel.createNodeModel(new TestAddNode(), new Vector2f(0, 0));
@@ -1176,7 +1147,6 @@ public class GraphSerializationTest {
      * float input illegal.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void incompatibleRetypeParksWireOnMissingPort(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         // INPUT-kind (READ) variable ⇒ the variable node's main port is a float OUTPUT.

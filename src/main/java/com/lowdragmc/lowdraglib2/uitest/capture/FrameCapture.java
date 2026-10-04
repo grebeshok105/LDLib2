@@ -6,12 +6,12 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.nio.file.Path;
 
 /**
@@ -24,7 +24,7 @@ import java.nio.file.Path;
  * after the report is written, and asynchronous writes would race that exit and silently drop the
  * most interesting screenshot — the one from the step that failed.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class FrameCapture {
 
     private FrameCapture() {

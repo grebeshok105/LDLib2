@@ -10,11 +10,9 @@ import com.lowdragmc.lowdraglib2.uitest.UITestRunner;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +21,18 @@ import java.util.List;
  * @author KilaBash
  * @date 2023/2/9
  * @implNote ClientCommands
+ * @port ELB_GG
+ * @date_port 2026/03/29
+ * @port_to fabric
  */
-@OnlyIn(Dist.CLIENT)
 public class ClientCommands {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> createLiteral(String command) {
-        return Commands.literal(command);
+    public static LiteralArgumentBuilder<FabricClientCommandSource> createLiteral(String command) {
+        return ClientCommandManager.literal(command);
     }
 
-    public static List<LiteralArgumentBuilder<CommandSourceStack>> createClientCommands() {
-        var commands = new ArrayList<LiteralArgumentBuilder<CommandSourceStack>>();
+    public static List<LiteralArgumentBuilder<FabricClientCommandSource>> createClientCommands() {
+        var commands = new ArrayList<LiteralArgumentBuilder<FabricClientCommandSource>>();
         commands.add(createLiteral("ldlib2_client")
                 .then(createLiteral("reload_shader")
                         .executes(context -> {
@@ -59,17 +59,17 @@ public class ClientCommands {
      * and none of that changes between attempts. While iterating on a scenario, launch once with
      * {@code -PldTestKeepOpen} and re-run from here instead.
      */
-    private static LiteralArgumentBuilder<CommandSourceStack> createAutoTestCommands() {
+    private static LiteralArgumentBuilder<FabricClientCommandSource> createAutoTestCommands() {
         return createLiteral("ldlib2_autotest")
                 .then(createLiteral("list")
                         .executes(context -> {
                             var names = UITestRunner.registeredScenarioNames();
-                            context.getSource().sendSuccess(() -> Component.literal(
-                                    names.size() + " scenario(s): " + String.join(", ", names)), false);
+                            context.getSource().sendFeedback(Component.literal(
+                                    names.size() + " scenario(s): " + String.join(", ", names)));
                             return names.size();
                         }))
                 .then(createLiteral("run")
-                        .then(Commands.argument("selection", StringArgumentType.greedyString())
+                        .then(ClientCommandManager.argument("selection", StringArgumentType.greedyString())
                                 .suggests((context, builder) -> {
                                     builder.suggest("all");
                                     UITestRunner.registeredScenarioNames().forEach(builder::suggest);
@@ -79,12 +79,12 @@ public class ClientCommands {
                                     var selection = StringArgumentType.getString(context, "selection");
                                     var error = UITestRunner.runInteractive(selection);
                                     if (error != null) {
-                                        context.getSource().sendFailure(Component.literal(error));
+                                        context.getSource().sendError(Component.literal(error));
                                         return 0;
                                     }
-                                    context.getSource().sendSuccess(() -> Component.literal(
+                                    context.getSource().sendFeedback(Component.literal(
                                             "Running UI scenarios: " + selection
-                                                    + " (results go to the log and report.json)"), false);
+                                                    + " (results go to the log and report.json)"));
                                     return 1;
                                 })));
     }
@@ -93,7 +93,7 @@ public class ClientCommands {
      * Development only helpers for eyeballing the text renderer. Not registered outside a dev environment:
      * the settings they poke live in the client config, which is where users are meant to change them.
      */
-    private static LiteralArgumentBuilder<CommandSourceStack> createFontCommands() {
+    private static LiteralArgumentBuilder<FabricClientCommandSource> createFontCommands() {
         return createLiteral("ldlib2_font")
                 .then(createLiteral("mode")
                         .executes(context -> {
@@ -102,15 +102,15 @@ public class ClientCommands {
                             LDLibClientConfig.setFontRenderMode(next);
                             // the renderers measure text slightly differently, so lay the screen out again
                             reinitCurrentScreen();
-                            context.getSource().sendSuccess(
-                                    () -> Component.literal("LDLib text: " + next), false);
+                            context.getSource().sendFeedback(
+                                    Component.literal("LDLib text: " + next));
                             return 1;
                         }))
                 .then(createLiteral("stats")
                         .executes(context -> {
                             LDFontStatsOverlay.toggle();
-                            context.getSource().sendSuccess(
-                                    () -> Component.literal(LDFontStatsOverlay.describe()), false);
+                            context.getSource().sendFeedback(
+                                    Component.literal(LDFontStatsOverlay.describe()));
                             return 1;
                         }));
     }
@@ -126,8 +126,13 @@ public class ClientCommands {
         }
     }
 
-    private static LiteralArgumentBuilder<CommandSourceStack> createScreenTestCommands() {
-        var builder = Commands.literal("ldlib2_screen_test");
+    private static LiteralArgumentBuilder<FabricClientCommandSource> createScreenTestCommands() {
+        var builder = ClientCommandManager.literal("ldlib2_screen_test")
+            .executes(context -> {
+                int count = LDLib2Registries.SCREEN_TESTS == null ? -1 : LDLib2Registries.SCREEN_TESTS.values().size();
+                context.getSource().sendFeedback(Component.literal("ldlib2_screen_test registered! Test count: " + count));
+                return 1;
+            });
         if (LDLib2Registries.SCREEN_TESTS == null) {
             return builder;
         }

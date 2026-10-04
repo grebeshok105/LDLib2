@@ -4,8 +4,6 @@ import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.nodegraphtookit.gui.command.IGraphCommand;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * Verifies the command-policy plumbing: a {@link com.lowdragmc.lowdraglib2.nodegraphtookit.api.graph.Graph}
@@ -17,7 +15,6 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
  * {@code GraphView} in its signatures) is constructed on the dedicated server — the overrides ignore
  * the argument and decide by flag/counter.</p>
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphCommandPolicyTest {
 
     /** A TestGraph whose command policy is driven by a flag, recording post-execute calls. */
@@ -37,7 +34,6 @@ public class GraphCommandPolicyTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void canExecuteCommandDelegatesToGraph(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start canExecuteCommandDelegatesToGraph");
 
@@ -57,7 +53,6 @@ public class GraphCommandPolicyTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void onCommandExecutedDelegatesToGraph(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start onCommandExecutedDelegatesToGraph");
 
@@ -74,7 +69,6 @@ public class GraphCommandPolicyTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void defaultsArePermissive(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start defaultsArePermissive");
 

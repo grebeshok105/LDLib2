@@ -6,8 +6,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedInputStream;
@@ -15,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -28,7 +28,7 @@ import java.util.zip.ZipInputStream;
  * Rows are stored left aligned in a 32 bit int, exactly like vanilla's {@code UnihexProvider.LineData}, so
  * the ink bounds and advances come out identical.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class UnihexSdfSource implements GlyphSource {
     private static final int GLYPH_HEIGHT = 16;
     /**

@@ -3,9 +3,9 @@ package com.lowdragmc.lowdraglib2.gui.ui.rendering;
 import com.lowdragmc.lowdraglib2.utils.Scope;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * The destination a UI frame is drawn into: its framebuffer, its gui scale and its OS window.
@@ -27,7 +27,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * {@link net.minecraft.client.gui.GuiGraphics} — {@link com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture}
  * implementations — and so cannot be handed the surface explicitly.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public interface UISurface {
 
     /**

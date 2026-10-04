@@ -4,8 +4,6 @@ import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.GraphView;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,6 @@ import java.util.Map;
  * on exactly one frame out of a zoom, which is why it was reported from watching the animation
  * rather than from any single capture — and why it is worth pinning numerically instead.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphViewGridTest {
 
     private static final float BASE = 64f;
@@ -55,7 +52,6 @@ public class GraphViewGridTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void everyLatticeChangesColourSmoothlyAcrossLevelBoundaries(GameTestHelper helper) {
         // Boundaries sit where base * scale * 4^k crosses MIN_PIXELS, i.e. around 0.22 and 0.875.
         // 400 steps over the range puts several samples either side of each of them.
@@ -114,7 +110,6 @@ public class GraphViewGridTest {
 
     /** The densest level must never be allowed to get tighter than the configured minimum. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void densestLevelStaysWithinTheSpacingBand(GameTestHelper helper) {
         for (int i = 0; i <= 200; i++) {
             float scale = 0.1f + (2.0f - 0.1f) * i / 200f;

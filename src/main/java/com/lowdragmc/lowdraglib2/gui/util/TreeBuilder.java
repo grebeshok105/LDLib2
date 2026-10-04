@@ -6,7 +6,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Vertical;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
 import com.lowdragmc.lowdraglib2.gui.ui.data.TextWrap;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import dev.vfyjxf.taffy.style.AlignItems;
 import dev.vfyjxf.taffy.style.FlexDirection;
 import net.minecraft.network.chat.Component;
@@ -28,7 +27,6 @@ import java.util.function.Consumer;
  * @param <K> the type of keys used in the tree
  * @param <V> the type of values associated with keys in the tree
  */
-@KJSBindings
 public class TreeBuilder<K, V> {
     protected final Stack<TreeNode<K, V>> stack = new Stack<>();
 

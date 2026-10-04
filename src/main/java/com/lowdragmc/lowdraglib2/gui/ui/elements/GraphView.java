@@ -30,7 +30,6 @@ import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@KJSBindings
 @LDLRegister(name = "graph-view", group = "container", registry = "ldlib2:ui_element")
 public class GraphView extends UIElement {
     public record DragOffset(float startOffsetX, float startOffsetY) {}

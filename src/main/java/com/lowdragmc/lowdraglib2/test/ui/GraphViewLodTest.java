@@ -7,8 +7,6 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.gui.WireElement;
 import com.lowdragmc.lowdraglib2.nodegraphtookit.model.wire.WireModel;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 /**
  * The thresholds that decide whether graph content draws in full, as flat silhouettes, or as plain
@@ -21,7 +19,6 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
  * happen to coincide; the pixel-scale cases below go through {@link GraphView#resolveLod} directly so
  * they stay meaningful either way.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphViewLodTest {
 
     private static final float SIMPLIFIED = 0.65f;
@@ -34,7 +31,6 @@ public class GraphViewLodTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void defaultThresholdsSplitThePixelScaleRange(GameTestHelper helper) {
         record Case(float pixelScale, GraphViewLod expected) {}
         var cases = new Case[]{
@@ -63,7 +59,6 @@ public class GraphViewLodTest {
      * the GUI scale, because it produces a genuinely different apparent size.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void guiScaleShiftsTheThresholds(GameTestHelper helper) {
         float zoom = 0.25f;
         var atScale2 = GraphView.resolveLod(zoom * 2f, true, SIMPLIFIED, BLOCK);
@@ -81,7 +76,6 @@ public class GraphViewLodTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void pixelScaleFoldsInTheGuiScale(GameTestHelper helper) {
         // No client on a game-test server, so the GUI scale term degrades to 1.
         var view = viewAt(0.4f);
@@ -103,7 +97,6 @@ public class GraphViewLodTest {
      * would never be visible. {@code getLod()} is a thin wrapper over exactly this call.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void disablingLodForcesFullAtAnyScale(GameTestHelper helper) {
         for (var pixelScale : new float[]{0.05f, 0.24f, 0.3f, 2f}) {
             var lod = GraphView.resolveLod(pixelScale, false, SIMPLIFIED, BLOCK);
@@ -116,7 +109,6 @@ public class GraphViewLodTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void customThresholdsShiftTheBands(GameTestHelper helper) {
         // Same pixel scale, three different threshold pairs - the bands must move with the style,
         // not with a value captured when the view was built.
@@ -136,7 +128,6 @@ public class GraphViewLodTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void scaleIsClampedToTheStyleRange(GameTestHelper helper) {
         var view = new GraphView();
         view.setScale(1000f);
@@ -159,7 +150,6 @@ public class GraphViewLodTest {
      * point list.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void wireHitTestsSurviveMissingGeometry(GameTestHelper helper) {
         var wire = new WireElement(new WireModel());
         try {

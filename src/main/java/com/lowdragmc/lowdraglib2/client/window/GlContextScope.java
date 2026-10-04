@@ -2,11 +2,11 @@ package com.lowdragmc.lowdraglib2.client.window;
 
 import com.lowdragmc.lowdraglib2.utils.Scope;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11C;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GLCapabilities;
 
 /**
@@ -31,7 +31,7 @@ import org.lwjgl.opengl.GLCapabilities;
  *       flushes, hence the {@link GL11C#glFlush()} before the switch.</li>
  * </ul>
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class GlContextScope implements Scope {
     private final long previousHandle;
     private final GLCapabilities previousCapabilities;

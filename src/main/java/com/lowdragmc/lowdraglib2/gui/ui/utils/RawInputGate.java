@@ -1,7 +1,7 @@
 package com.lowdragmc.lowdraglib2.gui.ui.utils;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * <p>The window's close button is unaffected — it arrives through {@code glfwWindowShouldClose}
  * rather than these callbacks — so a blocked game can still be quit.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class RawInputGate {
 
     @Nullable

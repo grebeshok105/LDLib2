@@ -11,12 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.function.Consumer;
-
-/**
- * Concrete implementation of option builder.
- *
- * <p>Used to create and configure node options using a fluent builder pattern.</p>
- */
 public class OptionBuilder implements IOptionBuilder<OptionBuilder> {
     protected OptionDefinitionContext context;
     protected String optionId;

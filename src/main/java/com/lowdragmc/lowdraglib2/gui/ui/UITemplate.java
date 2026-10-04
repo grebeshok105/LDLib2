@@ -14,8 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.Event;
-import net.neoforged.neoforge.common.NeoForge;
+
+
 
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
@@ -98,8 +98,7 @@ public class UITemplate {
         initUI(root);
         var ui = UI.of(root, getAllStylesheets());
         var event = new CreateUI(this, ui);
-        NeoForge.EVENT_BUS.post(event);
-        return event.ui;
+                return event.ui;
     }
 
     public void initUI(UIElement root) {
@@ -155,7 +154,7 @@ public class UITemplate {
         this.stylesheets.addAll(other.stylesheets);
     }
 
-    public static class CreateUI extends Event {
+    public static class CreateUI {
         public final UITemplate template;
         public UI ui;
 

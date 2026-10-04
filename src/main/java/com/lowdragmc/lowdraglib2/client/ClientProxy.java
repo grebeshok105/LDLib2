@@ -5,145 +5,141 @@ import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.Platform;
 import com.lowdragmc.lowdraglib2.client.font.LDFontManager;
 import com.lowdragmc.lowdraglib2.client.font.LDFontStatsOverlay;
-import com.lowdragmc.lowdraglib2.client.model.forge.LDLRendererModel;
+import com.lowdragmc.lowdraglib2.client.model.fabric.LDLRendererModel;
+import com.lowdragmc.lowdraglib2.client.model.fabric.OBJModelLoader;
 import com.lowdragmc.lowdraglib2.client.renderer.ATESRRendererProvider;
 import com.lowdragmc.lowdraglib2.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib2.client.shader.LDLibShaders;
-import com.lowdragmc.lowdraglib2.core.mixins.ParticleEngineAccessor;
+import com.lowdragmc.lowdraglib2.client.window.OsWindowManager;
 import com.lowdragmc.lowdraglib2.editor.resource.IRendererResource;
+import com.lowdragmc.lowdraglib2.networking.both.PacketModularUISync;
+import com.lowdragmc.lowdraglib2.networking.both.PacketRPCBlockEntity;
+import com.lowdragmc.lowdraglib2.networking.both.PacketRPCPacket;
+import com.lowdragmc.lowdraglib2.networking.both.PacketUIRPCEvent;
+import com.lowdragmc.lowdraglib2.networking.both.PacketUIRPCEventReturn;
+import com.lowdragmc.lowdraglib2.networking.s2c.SPacketAutoSyncBlockEntity;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.server.packs.PackType;
 import com.lowdragmc.lowdraglib2.editor.resource.PackResourceManager;
 import com.lowdragmc.lowdraglib2.gui.factory.LDMenuTypes;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
 import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
-import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUIClientElementComponent;
-import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUITooltipComponent;
-import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib2.integration.kjs.ui.LDKJSMenuTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientProxy {
 
-    public ClientProxy(IEventBus eventBus, ModContainer modContainer) {
-        eventBus.register(this);
-        modContainer.registerConfig(ModConfig.Type.CLIENT, LDLibClientConfig.SPEC);
-        // Without a screen factory NeoForge shows no Config button for the mod in the mod list, leaving the
-        // file as the only way in. ConfigurationScreen builds the screen from the spec.
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-    }
+    public static void register() {
+        // load the client config before anything reads font settings
+        LDLibClientConfig.init();
+        // a config save invalidates every glyph atlas; freeing textures is not thread safe so it goes
+        // through the client thread, mirroring the NeoForge ModConfigEvent handler this replaces.
+        LDLibClientConfig.addReloadListener(() -> Minecraft.getInstance().execute(LDFontManager.INSTANCE::invalidate));
 
-    @SubscribeEvent
-    public void onRegisterMenuScreensEvent(final RegisterMenuScreensEvent event) {
-        event.register(LDMenuTypes.PLAYER_UI.get(), ModularUIContainerScreen::new);
-        event.register(LDMenuTypes.HELD_ITEM_UI.get(), ModularUIContainerScreen::new);
-        event.register(LDMenuTypes.BLOCK_UI.get(), ModularUIContainerScreen::new);
-        if (LDLib2.isKubejsLoaded()) {
-            LDKJSMenuTypes.onRegisterMenuScreensEvent(event);
+        // Register Screens
+        MenuScreens.register(LDMenuTypes.PLAYER_UI, ModularUIContainerScreen::new);
+        MenuScreens.register(LDMenuTypes.HELD_ITEM_UI, ModularUIContainerScreen::new);
+        MenuScreens.register(LDMenuTypes.BLOCK_UI, ModularUIContainerScreen::new);
+
+        // Register Entity Renderers
+        if (Platform.isDevEnv() && CommonProxy.TEST_BE_TYPE != null) {
+            BlockEntityRendererRegistry.register(CommonProxy.TEST_BE_TYPE, ATESRRendererProvider::new);
         }
-    }
-
-    @SubscribeEvent
-    public void onRegisterClientTooltipComponentFactoriesEvent(final RegisterClientTooltipComponentFactoriesEvent event) {
-        event.register(ModularUITooltipComponent.class, ModularUIClientElementComponent::new);
-    }
-
-    @SubscribeEvent
-    public void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        if (Platform.isDevEnv()) {
-            event.registerBlockEntityRenderer(CommonProxy.TEST_BE_TYPE.get(), ATESRRendererProvider::new);
+        if (CommonProxy.RENDERER_BE_TYPE != null) {
+            BlockEntityRendererRegistry.register(CommonProxy.RENDERER_BE_TYPE, ATESRRendererProvider::new);
         }
-        event.registerBlockEntityRenderer(CommonProxy.RENDERER_BE_TYPE.get(), ATESRRendererProvider::new);
-    }
 
-    @SubscribeEvent
-    public void clientSetup(final FMLClientSetupEvent e) {
-        e.enqueueWork(() -> {
-            LDLibShaders.init();
+        // Networking receivers (S2C)
+        ClientPlayNetworking.registerGlobalReceiver(SPacketAutoSyncBlockEntity.TYPE, (payload, context) -> {
+            context.client().execute(() -> SPacketAutoSyncBlockEntity.handle(payload, context.player(), context.player().registryAccess()));
         });
-    }
+        ClientPlayNetworking.registerGlobalReceiver(PacketUIRPCEvent.TYPE, (payload, context) -> {
+            context.client().execute(() -> PacketUIRPCEvent.handle(payload, context.player(), context.player().registryAccess()));
+        });
+        ClientPlayNetworking.registerGlobalReceiver(PacketUIRPCEventReturn.TYPE, (payload, context) -> {
+            context.client().execute(() -> PacketUIRPCEventReturn.handle(payload, context.player(), context.player().registryAccess()));
+        });
+        ClientPlayNetworking.registerGlobalReceiver(PacketRPCBlockEntity.TYPE, (payload, context) -> {
+            context.client().execute(() -> PacketRPCBlockEntity.handle(payload, context.player(), context.player().registryAccess()));
+        });
+        ClientPlayNetworking.registerGlobalReceiver(PacketModularUISync.TYPE, (payload, context) -> {
+            context.client().execute(() -> PacketModularUISync.handle(payload, context.player(), context.player().registryAccess()));
+        });
+        ClientPlayNetworking.registerGlobalReceiver(PacketRPCPacket.TYPE, (payload, context) -> {
+            context.client().execute(() -> PacketRPCPacket.handle(payload, context.player(), context.player().registryAccess()));
+        });
 
-    @SubscribeEvent
-    public void modelRegistry(final ModelEvent.RegisterGeometryLoaders e) {
-        e.register(LDLib2.id("renderer"), LDLRendererModel.Loader.INSTANCE);
-    }
+        // Lifecycle Events
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> LDLibShaders.init());
 
-    @SubscribeEvent
-    public void shaderRegistry(RegisterShadersEvent event) {
-        LDLibShaders.registerShaders(event);
-    }
+        // Model Loading
+        ModelLoadingPlugin.register(pluginContext -> {
+            pluginContext.resolveModel().register(OBJModelLoader.INSTANCE);
+            pluginContext.modifyModelOnLoad().register((model, context) -> {
+                if (LDLib2.id("renderer").equals(context.topLevelId())) {
+                    return LDLRendererModel.INSTANCE;
+                }
+                return model;
+            });
+            registerModels(pluginContext);
+        });
 
-    /**
-     * The client config decides how glyphs are baked, so a change to it invalidates every atlas.
-     * <p>
-     * Only {@code Reloading} matters: at {@code Loading} time nothing has been baked yet. The rebuild is handed
-     * to the client thread because this event is documented to fire on any thread and freeing a texture is not
-     * thread safe.
-     */
-    @SubscribeEvent
-    public void onConfigReloaded(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getSpec() == LDLibClientConfig.SPEC) {
-            Minecraft.getInstance().execute(LDFontManager.INSTANCE::invalidate);
-        }
-    }
+        // Shaders
+        CoreShaderRegistrationCallback.EVENT.register(LDLibShaders::registerCoreShaders);
 
-    /**
-     * TEMPORARY: development readout, see {@link LDFontStatsOverlay}. Registered above everything so it is not
-     * hidden by the rest of the HUD.
-     */
-    @SubscribeEvent
-    public void registerFontStatsOverlay(RegisterGuiLayersEvent event) {
-        if (Platform.isDevEnv()) {
-            event.registerAboveAll(LDLib2.id("font_stats"), LDFontStatsOverlay.INSTANCE);
-        }
-    }
+        // Resource Listeners
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(PackResourceManager.INSTANCE);
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(StylesheetManager.INSTANCE);
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(LDFontManager.INSTANCE);
 
-    @SubscribeEvent
-    public void onRegisterClientReloadListenersEvent(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(PackResourceManager.INSTANCE);
-        event.registerReloadListener(StylesheetManager.INSTANCE);
-        event.registerReloadListener(LDFontManager.INSTANCE);
-    }
-
-    @SubscribeEvent
-    public void registerModels(ModelEvent.RegisterAdditional event) {
-        // load all models under the ldlib folder
-        for (var entry : Minecraft.getInstance().getResourceManager().listResources("models",
-                id -> id.getNamespace().equals(LDLib2.MOD_ID) && id.getPath().endsWith(".json")).entrySet()) {
-            if (entry.getValue().sourcePackId().equals(LDLib2.MOD_ID)) {
-                var modelLocation = ResourceLocation.fromNamespaceAndPath(
-                        entry.getKey().getNamespace(),
-                        entry.getKey().getPath()
-                                .replace("models/", "")
-                                .replace(".json", ""));
-                event.register(ModelResourceLocation.standalone(modelLocation));
+        /**
+         * TEMPORARY: development readout, see {@link LDFontStatsOverlay}. Registered after {@link
+         * IdentifiedLayer#SLEEP} so it sits above the rest of the HUD, matching the NeoForge aboveAll layer.
+         */
+        HudLayerRegistrationCallback.EVENT.register(layeredDraw -> {
+            if (Platform.isDevEnv()) {
+                layeredDraw.attachLayerAfter(IdentifiedLayer.SLEEP, LDLib2.id("font_stats"), LDFontStatsOverlay.INSTANCE);
             }
+        });
+
+        OsWindowManager.register();
+        ClientEventListener.register();
+        ClientEventListener.init();
+    }
+
+    public static void registerModels(ModelLoadingPlugin.Context event) {
+        // load all models under the ldlib and photon folder
+        for (var entry : Minecraft.getInstance().getResourceManager().listResources("models",
+                id -> (id.getNamespace().equals(LDLib2.MOD_ID) || id.getNamespace().equals("photon")) &&
+                      (id.getPath().endsWith(".json") || id.getPath().endsWith(".obj"))).entrySet()) {
+            var modelLocation = ResourceLocation.fromNamespaceAndPath(
+                    entry.getKey().getNamespace(),
+                    entry.getKey().getPath()
+                            .replace("models/", "")
+                            .replace(".json", "")
+                            .replace(".obj", ""));
+            event.addModels(modelLocation);
         }
-        IRendererResource.INSTANCE.onAdditionalModel(event::register);
+        IRendererResource.INSTANCE.onAdditionalModel(mrl -> event.addModels(mrl.id()));
         for (IRenderer renderer : IRenderer.EVENT_REGISTERS) {
-            renderer.onAdditionalModel(event::register);
+            renderer.onAdditionalModel(event::addModels);
         }
     }
 
     public static ParticleProvider getProvider(ParticleType<?> type) {
-        if (Minecraft.getInstance().particleEngine instanceof ParticleEngineAccessor accessor) {
-            return accessor.getProviders().get(BuiltInRegistries.PARTICLE_TYPE.getKey(type));
+        if (Minecraft.getInstance().particleEngine instanceof com.lowdragmc.lowdraglib2.core.mixins.ParticleEngineAccessor accessor) {
+            return accessor.getProviders().get(BuiltInRegistries.PARTICLE_TYPE.getId(type));
         }
         return null;
     }

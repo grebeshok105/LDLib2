@@ -13,14 +13,10 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder(LDLib2.MOD_ID)
 public class RPCManagedHolderTest {
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void handleRPCPacketInvokesManagedInstanceSelectedByPacketIndex(GameTestHelper helper) {
         var holder = new TestRPCManagedHolder();
         var first = new TestManaged();

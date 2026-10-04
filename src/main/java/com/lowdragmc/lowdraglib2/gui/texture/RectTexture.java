@@ -15,8 +15,8 @@ import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
@@ -177,7 +177,7 @@ public class RectTexture extends TransformTexture {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected void drawInternal(GuiGraphics graphics, float mouseX, float mouseY, float x, float y, float width, float height, float partialTicks) {
         if (canUsePlainRectPath(width, height)) {
             drawPlainRect(graphics, x, y, width, height);
@@ -200,7 +200,7 @@ public class RectTexture extends TransformTexture {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void drawPlainRect(GuiGraphics graphics, float x, float y, float width, float height) {
         if (ColorUtils.alpha(color) > 0) {
             DrawerHelper.drawSolidRect(graphics, x, y, width, height, color);
@@ -215,7 +215,7 @@ public class RectTexture extends TransformTexture {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void drawFill(VertexConsumer buffer, Matrix4f mat, float x, float y, float width, float height) {
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
@@ -251,7 +251,7 @@ public class RectTexture extends TransformTexture {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void drawBorder(VertexConsumer buffer, Matrix4f mat, float x, float y, float width, float height) {
         int r = (borderColor >> 16) & 0xFF;
         int g = (borderColor >> 8) & 0xFF;

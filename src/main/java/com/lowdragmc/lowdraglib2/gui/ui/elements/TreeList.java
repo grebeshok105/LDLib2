@@ -18,7 +18,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.style.PropertyRegistry;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.UIElementProvider;
 import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib2.gui.util.ITreeNode;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import com.lowdragmc.lowdraglib2.registry.annotation.LDLRegister;
 import dev.vfyjxf.taffy.style.AlignItems;
 import dev.vfyjxf.taffy.style.FlexDirection;
@@ -27,8 +26,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.function.Consumers;
 import org.appliedenergistics.yoga.*;
 
@@ -47,7 +46,6 @@ import java.util.function.Predicate;
 @Accessors(chain = true)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@KJSBindings
 @LDLRegister(name = "tree-list", group = "misc", registry = "ldlib2:ui_element")
 public class TreeList<NODE extends ITreeNode<?, ?>> extends UIElement {
     /** Where a dragged node is dropped relative to the target row. */
@@ -829,7 +827,7 @@ public class TreeList<NODE extends ITreeNode<?, ?>> extends UIElement {
         return ui.isMouseOver(x, y + height * 2 / 3, width, height / 3, event.x, event.y);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static IGuiTexture createDraggingOverlay(int mode) {
         if (mode == 0) {
             return (graphics, mouseX, mouseY, x, y, width, height, partialTicks) -> {

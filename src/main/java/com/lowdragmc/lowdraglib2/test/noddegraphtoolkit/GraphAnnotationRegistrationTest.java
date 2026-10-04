@@ -3,16 +3,12 @@ package com.lowdragmc.lowdraglib2.test.noddegraphtoolkit;
 import com.lowdragmc.lowdraglib2.LDLib2;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.Set;
 
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphAnnotationRegistrationTest {
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void nodeTypesAreRegistered(GameTestHelper helper) {
         var expectedNodeKeys = Set.of("test_add", "test_constant", "test_concat", "test_color_blend");
         for (var key : expectedNodeKeys) {
@@ -36,7 +32,6 @@ public class GraphAnnotationRegistrationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void portOrientationFollowsBuilder(GameTestHelper helper) {
         var graph = new TestGraph();
         var node = graph.graphModel.createNodeModel(new TestVerticalNode(), new org.joml.Vector2f(0, 0));
@@ -65,7 +60,6 @@ public class GraphAnnotationRegistrationTest {
     }
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void unboundNodeIsInOtherGraphRegistry(GameTestHelper helper) {
         if (AnnotatedOtherGraph.NODE_REGISTRY.get("unbound_test_node") == null) {
             helper.fail("unbound_test_node should be in AnnotatedOtherGraph registry");

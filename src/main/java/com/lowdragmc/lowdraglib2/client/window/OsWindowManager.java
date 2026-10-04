@@ -2,31 +2,27 @@ package com.lowdragmc.lowdraglib2.client.window;
 
 import com.lowdragmc.lowdraglib2.LDLib2;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import net.neoforged.neoforge.event.GameShuttingDownEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedHashMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.List;
 
 /**
  * Drives every open {@link OsWindow} once per frame, and makes sure none of them outlive the game.
  *
- * <p>The pump hangs off {@code RenderFrameEvent.Post}, which fires after the game renderer has
+ * <p>The pump hangs off the tail of {@code GameRenderer#render}, which fires after the game renderer has
  * finished and flushed but before Minecraft unbinds its main render target and swaps. At that point
  * the render thread is idle, the shared buffer source is empty and the model-view stack is back
  * where it started — the cleanest seam in the frame. Priority is {@code LOW} so other post-frame
  * consumers see the state they expect, and every host is driven inside its own try/catch so one
  * misbehaving window cannot take the game's frame down with it.
  */
-@OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = LDLib2.MOD_ID, value = Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class OsWindowManager {
 
     /**
@@ -57,6 +53,13 @@ public final class OsWindowManager {
     }
 
     private OsWindowManager() {
+    }
+
+    /**
+     * Registers the shutdown hook. The frame pump itself is driven by {@code GameRendererMixin}.
+     */
+    public static void register() {
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> onGameShuttingDown());
     }
 
     /**
@@ -131,10 +134,9 @@ public final class OsWindowManager {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onFrameRendered(RenderFrameEvent.Post event) {
+    public static void onFrameRendered(DeltaTracker deltaTracker) {
         if (ENTRIES.isEmpty()) return;
-        var partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        var partialTick = deltaTracker.getGameTimeDeltaPartialTick(false);
         // Copy: a host can close itself (or another) while being driven — a close button runs inside
         // drainInput, so by the time it returns this host may already be gone.
         for (var host : List.copyOf(ENTRIES.keySet())) {
@@ -179,8 +181,7 @@ public final class OsWindowManager {
      * {@code glfwTerminate} — that destroys every remaining window out from under us and leaks the
      * native callback closures we allocated for them.
      */
-    @SubscribeEvent
-    public static void onGameShuttingDown(GameShuttingDownEvent event) {
+    public static void onGameShuttingDown() {
         for (var host : List.copyOf(ENTRIES.keySet())) {
             try {
                 close(host);

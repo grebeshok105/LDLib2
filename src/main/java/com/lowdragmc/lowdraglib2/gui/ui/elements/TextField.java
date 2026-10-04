@@ -24,7 +24,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.style.Property;
 import com.lowdragmc.lowdraglib2.gui.ui.style.PropertyRegistry;
 import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.Sprites;
 import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import com.lowdragmc.lowdraglib2.math.Range;
 import com.lowdragmc.lowdraglib2.registry.annotation.LDLRegister;
 import com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted;
@@ -52,8 +51,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.Tuple;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.appliedenergistics.yoga.*;
 import org.lwjgl.glfw.GLFW;
 import org.w3c.dom.Element;
@@ -70,7 +69,6 @@ import java.util.regex.Pattern;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true)
-@KJSBindings
 @LDLRegister(name = "text-field", group = "basic", registry = "ldlib2:ui_element")
 public class TextField extends BindableUIElement<String> {
     private record NumberStart(double value){}
@@ -1037,7 +1035,7 @@ public class TextField extends BindableUIElement<String> {
 
 
     /// rendering
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Font getFont() {
         return LDLibFonts.font();
     }

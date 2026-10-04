@@ -20,12 +20,12 @@ import dev.vfyjxf.taffy.style.AlignItems;
 import dev.vfyjxf.taffy.style.FlexDirection;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.List;
 
 /**
@@ -49,7 +49,7 @@ import java.util.List;
  * without leaving this window — including UIs in windows of their own, whose outlines and element
  * picking then happen over there rather than here.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class UIDebuggerWindow extends ModularUIWindow {
 
     private static final String TITLE = "UI Debugger";

@@ -10,8 +10,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -21,52 +21,52 @@ import java.util.function.Consumer;
 import org.lwjgl.opengl.GL30;
 
 public class GUIContext {
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public ModularUI modularUI;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public GuiGraphics graphics;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public int mouseX, mouseY;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public float partialTick;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public EnhancedPoseStack pose;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public Minecraft mc;
     /**
      * Where this frame is being drawn. Defaults to the game window; a UI rendered into an off-screen
      * target sets its own, which is what keeps the scissor box and {@link UIVisualLayer} sizing
      * honest.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public UISurface surface = UISurface.main();
 
     // runtime
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean refreshLocalMouse = true;
     /**
      * Current element tint color (ARGB), set by UIElement before drawing its background/overlay textures.
      * -1 (0xFFFFFFFF) means no tint. Textures read this to multiply (per-channel) with their own color.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public int elementColor = -1;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public float localMouseX, localMouseY;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public ObjectArrayList<UIVisualLayer> visualLayers = new ObjectArrayList<>();
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public final ObjectArrayList<Rect> scissorStack = new ObjectArrayList<>();
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private final ObjectArrayList<PostCall> postRenderingCalls = new ObjectArrayList<>();
     private record PostCall(Consumer<GUIContext> call, PoseStack.Pose pose) {}
     private int lastFBO = -1;
     
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static GUIContext of(ModularUI modularUI, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         return of(modularUI, graphics, mouseX, mouseY, partialTick, UISurface.main());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static GUIContext of(ModularUI modularUI, GuiGraphics graphics, int mouseX, int mouseY, float partialTick,
                                 UISurface surface) {
         var context = new GUIContext();
@@ -82,17 +82,17 @@ public class GUIContext {
         return context;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void drawTexture(IGuiTexture texture, float x, float y, float width, float height) {
         texture.draw(this, x, y, width, height);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void enableScissor(float x, float y, float width, float height) {
         enableScissor(x, y, width, height, graphics.pose().last().pose());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void enableScissor(float x, float y, float width, float height, Matrix4f trans) {
         var realPos = trans.transform(new Vector4f(x, y, 0, 1));
         var realPos2 = trans.transform(new Vector4f(x + width, y + height, 0, 1));
@@ -107,21 +107,21 @@ public class GUIContext {
         UIScissor.reapply(surface, applied);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void disableScissor() {
         graphics.disableScissor();
         scissorStack.pop();
         UIScissor.reapply(surface, scissorStack.isEmpty() ? null : scissorStack.top());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void refreshLocalMouse() {
         var realMouse = pose.last().pose().invert(new Matrix4f()).transformPosition(new Vector3f(mouseX, mouseY, 0));
         localMouseX = realMouse.x;
         localMouseY = realMouse.y;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void pushVisualLayer(UIVisualLayer layer) {
         graphics.flush();
         if (visualLayers.isEmpty()) {
@@ -134,7 +134,7 @@ public class GUIContext {
         layer.clear();
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void popVisualLayer() {
         var popped = visualLayers.pop();
         if (popped != null) {
@@ -154,7 +154,7 @@ public class GUIContext {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setElementColor(int elementColor) {
         if (this.elementColor == elementColor) return;
         this.elementColor = elementColor;
@@ -162,7 +162,7 @@ public class GUIContext {
                 ColorUtils.blue(elementColor), ColorUtils.alpha(elementColor));
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void resetElementColor() {
         if (this.elementColor == -1) return;
         this.elementColor = -1;

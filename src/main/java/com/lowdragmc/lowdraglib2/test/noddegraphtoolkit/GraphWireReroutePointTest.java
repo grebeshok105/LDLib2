@@ -6,8 +6,6 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.model.node.NodeModel;
 import com.lowdragmc.lowdraglib2.nodegraphtookit.model.wire.WireReroutePointModel;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.Objects;
  * these tests pin down that N wires can leave one point while every connection-side API still sees
  * nothing but N ordinary {@code fromPort → toPort} wires.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphWireReroutePointTest {
 
     /**
@@ -27,7 +24,6 @@ public class GraphWireReroutePointTest {
      * identical before and after.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void reroutePointsDoNotChangeConnectionApi(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         var producer = graphModel.createNodeModel(new TestAddNode(), new Vector2f(0, 0));
@@ -74,7 +70,6 @@ public class GraphWireReroutePointTest {
      * from the same output port.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void fanOutFromReroutePointSharesTheTrunk(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         var producer = graphModel.createNodeModel(new TestAddNode(), new Vector2f(0, 0));
@@ -123,7 +118,6 @@ public class GraphWireReroutePointTest {
      * of the point, so the whole subtree inherits it without anyone walking the wire list.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void bendingASharedTrunkBendsEveryBranch(GameTestHelper helper) {
         var graph = fannedOutGraph();
         var graphModel = graph.graphModel;
@@ -161,7 +155,6 @@ public class GraphWireReroutePointTest {
      * Deleting a shared point straightens every branch by one bend and disconnects none of them.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void deletingASharedReroutePointKeepsEveryBranch(GameTestHelper helper) {
         var graphModel = fannedOutGraph().graphModel;
         var trunk = graphModel.getWireReroutePointModels().get(0);
@@ -199,7 +192,6 @@ public class GraphWireReroutePointTest {
      * them does. Deleting one branch keeps it; deleting the last one sweeps it away.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void reroutePointOutlivesOneBranchButNotAll(GameTestHelper helper) {
         var graphModel = fannedOutGraph().graphModel;
         var trunk = graphModel.getWireReroutePointModels().get(0);
@@ -231,7 +223,6 @@ public class GraphWireReroutePointTest {
      * fan-out that reloaded as two independent copies would drift apart the first time it is dragged.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void fanOutSurvivesSerialization(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var graphModel = fannedOutGraph().graphModel;
@@ -282,7 +273,6 @@ public class GraphWireReroutePointTest {
      * fan-out is still a fan-out rather than two parallel copies of the trunk.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void fanOutSurvivesCopyPaste(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var graphModel = fannedOutGraph().graphModel;
@@ -318,7 +308,6 @@ public class GraphWireReroutePointTest {
      * connections, so the assertion is that all of them moved and none of them broke.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void reSourcingAReroutePointMovesEveryBranch(GameTestHelper helper) {
         var graphModel = fannedOutGraph().graphModel;
         var trunk = graphModel.getWireReroutePointModels().get(0);
@@ -356,7 +345,6 @@ public class GraphWireReroutePointTest {
      * chain feed two different source ports, which no wire through it could agree on.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void reSourcingDetachesTheOldUpstream(GameTestHelper helper) {
         var graphModel = fannedOutGraph().graphModel;
         var trunk = graphModel.getWireReroutePointModels().get(0);
@@ -390,7 +378,6 @@ public class GraphWireReroutePointTest {
      * its {@link WireReroutePointModel#getPosition()} top-left, and the conversion round-trips.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void reroutePointCentreRoundTrips(GameTestHelper helper) {
         var graphModel = new TestGraph().graphModel;
         var centre = new Vector2f(120, 80);

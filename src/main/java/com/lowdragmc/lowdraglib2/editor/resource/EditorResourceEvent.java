@@ -1,18 +1,18 @@
 package com.lowdragmc.lowdraglib2.editor.resource;
 
-import net.neoforged.bus.api.Event;
-import net.neoforged.fml.event.IModBusEvent;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
-public abstract class EditorResourceEvent extends Event implements IModBusEvent {
-    public final ResourceInstance<?> resourceInstance;
+public interface EditorResourceEvent {
+    Event<LoadBuiltin> LOAD_BUILTIN = EventFactory.createArrayBacked(LoadBuiltin.class,
+            (listeners) -> (resourceInstance) -> {
+                for (LoadBuiltin listener : listeners) {
+                    listener.onLoad(resourceInstance);
+                }
+            });
 
-    public EditorResourceEvent(ResourceInstance<?> resourceInstance) {
-        this.resourceInstance = resourceInstance;
-    }
-
-    public static class LoadBuiltin extends EditorResourceEvent {
-        public <T> LoadBuiltin(ResourceInstance<T> resourceInstance) {
-            super(resourceInstance);
-        }
+    @FunctionalInterface
+    interface LoadBuiltin {
+        void onLoad(ResourceInstance<?> resourceInstance);
     }
 }

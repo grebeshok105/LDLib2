@@ -8,9 +8,9 @@ import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.window.ModularUIWindow;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ import java.util.List;
  * cross-window drag, and faking it needs global cursor tracking and hit-testing against every window,
  * so floating and docking back are menu-driven instead.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class FloatingViewWindow extends ModularUIWindow {
 
     @Getter

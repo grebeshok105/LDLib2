@@ -11,8 +11,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NbtIo;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,11 +23,9 @@ import java.util.Objects;
  * itself, its caching, and above all that it never shadows a registered provider or leaks into the
  * resource enumeration.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class DirectFileResolutionTest {
 
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void resolvesFileOutsideAnyProvider(GameTestHelper helper) {
         var directory = makeDirectory("direct_basic");
         try {
@@ -56,7 +52,6 @@ public class DirectFileResolutionTest {
 
     /** A file whose envelope declares another resource type must not be loaded. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void rejectsWrongTypeEnvelope(GameTestHelper helper) {
         var directory = makeDirectory("direct_wrong_type");
         try {
@@ -79,7 +74,6 @@ public class DirectFileResolutionTest {
      * inside the game directory.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void rejectsOutsideGameDir(GameTestHelper helper) {
         var directory = new File(System.getProperty("java.io.tmpdir"), "ldlib-direct-test");
         try {
@@ -100,7 +94,6 @@ public class DirectFileResolutionTest {
 
     /** Editing a file outside the editor is picked up once the shared cache is dropped. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void picksUpExternalEdits(GameTestHelper helper) {
         var directory = makeDirectory("direct_external_edit");
         try {
@@ -128,7 +121,6 @@ public class DirectFileResolutionTest {
 
     /** A missing path is cached as such, but creating the file must still make it resolvable. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void negativeCacheDoesNotBlockCreation(GameTestHelper helper) {
         var directory = makeDirectory("direct_negative_cache");
         try {
@@ -158,7 +150,6 @@ public class DirectFileResolutionTest {
      * over whatever happens to be on disk.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void registeredProviderStillWins(GameTestHelper helper) {
         var directory = makeDirectory("direct_provider_wins");
         var instance = instance();
@@ -198,7 +189,6 @@ public class DirectFileResolutionTest {
 
     /** The tier resolves paths but owns none, so it must never appear in the resource listing. */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void listAllResourcesUnaffected(GameTestHelper helper) {
         var directory = makeDirectory("direct_listing");
         try {

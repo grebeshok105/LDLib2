@@ -26,8 +26,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.data.Horizontal;
 import com.lowdragmc.lowdraglib2.gui.ui.data.TextWrap;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Vertical;
 import com.lowdragmc.lowdraglib2.editor.ui.floating.FloatingViewManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Dialog;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
@@ -62,6 +60,8 @@ import java.util.Map;
 import java.util.Deque;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.stream.Stream;
 
 @Getter
@@ -74,7 +74,7 @@ public abstract class Editor extends UIElement implements EditorHost {
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public FloatingViewManager getFloatingViews() {
         if (floatingViews == null) {
             floatingViews = new FloatingViewManager(this);
@@ -164,7 +164,7 @@ public abstract class Editor extends UIElement implements EditorHost {
      * what stops that load from failing.
      */
     @Nullable
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private FloatingViewManager floatingViews;
     /**
      * Last loaded layout for the current project type. Consulted by {@link #placeView} so that

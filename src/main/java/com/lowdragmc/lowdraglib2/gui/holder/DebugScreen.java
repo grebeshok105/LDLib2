@@ -15,8 +15,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
@@ -238,7 +238,7 @@ public class DebugScreen extends ModularUIScreen {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         REAL_MOUSE_POS.set(mouseX, mouseY);
         // The layer beneath has already drawn the inspected UI and, with it, the debugger's overlay.

@@ -19,7 +19,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.style.StyleEngine;
 import com.lowdragmc.lowdraglib2.gui.ui.utils.KeyState;
 import com.lowdragmc.lowdraglib2.gui.LDLibFonts;
 import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import com.lowdragmc.lowdraglib2.math.Size;
 import com.lowdragmc.lowdraglib2.utils.Scope;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -49,8 +48,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.appliedenergistics.yoga.YogaConstants;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -67,7 +66,6 @@ import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@KJSBindings
 public class ModularUI {
     /**
      * The UI currently handling input or rendering, when that is not the one a caller can reach from
@@ -75,7 +73,7 @@ public class ModularUI {
      *
      * @see #active()
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     private static ModularUI activeUI;
 
@@ -90,12 +88,12 @@ public class ModularUI {
     private boolean shouldCloseOnKeyInventory = true;
 
     // runtime
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     private ModularUIWidget widget;
     @Nullable
-    @OnlyIn(Dist.CLIENT)
-    @Getter(onMethod_ = {@OnlyIn(Dist.CLIENT)})
+    @Environment(EnvType.CLIENT)
+    @Getter(onMethod_ = {@Environment(EnvType.CLIENT)})
     private Screen screen;
     @Getter
     private TaffyTree taffyTree;
@@ -168,7 +166,7 @@ public class ModularUI {
     @Getter
     private TooltipComponent tooltipComponent;
     @Nullable
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private Font tooltipFont;
     @Getter
     private ItemStack tooltipStack = ItemStack.EMPTY;
@@ -502,18 +500,18 @@ public class ModularUI {
     }
 
     /// screen only
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setScreenAndInit(Screen screen) {
         setScreen(screen);
         init(screen.width, screen.height);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setScreen(@Nullable Screen screen) {
         this.screen = screen;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void init(int screenWidth, int screenHeight) {
         // A UI can be torn down and stood back up - a preview pane, a recipe viewer - so this is
         // "removed and not since re-initialised", not "was ever removed".
@@ -647,7 +645,7 @@ public class ModularUI {
      * This will trigger FocusOut event on the old focused element and FocusIn event on the new focused element.
      * @param element the element to focus, or null to clear focus
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void requestFocus(@Nullable UIElement element) {
         if (focusedElement == element) return;
 
@@ -691,7 +689,7 @@ public class ModularUI {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void clearFocus() {
         requestFocus(null);
     }
@@ -704,7 +702,7 @@ public class ModularUI {
      * <p>Lives here because "is there an LDLib2 UI on screen right now" is a question any mod can
      * need to ask, and answering it means knowing all three attachment routes.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public static ModularUI of(@Nullable Screen screen) {
         if (screen == null) return null;
@@ -731,7 +729,7 @@ public class ModularUI {
      * <em>ask</em> what is at a point — "can this be clicked?" — must not have to disturb the hover
      * to find out, or its own later assertions end up observing the probe rather than the UI.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public UIElement hitTestAtScreen(float screenX, float screenY) {
         var local = new Matrix4f(lastDrawPose).invert().transformPosition(new Vector3f(screenX, screenY, 0));
@@ -752,7 +750,7 @@ public class ModularUI {
      *                    inverse of {@link #getLastDrawPose()} (see {@code GUIContext#refreshLocalMouse})
      * @param localMouseY mouse y in the same space
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void refreshHoveredElement(float localMouseX, float localMouseY) {
         lastMouseX = localMouseX;
         lastMouseY = localMouseY;
@@ -782,7 +780,7 @@ public class ModularUI {
      * Maps a GUI-scaled screen position into the root element's local space and refreshes the hover
      * from it. This is the inverse of the transform {@code GUIContext} applies each frame.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void refreshHoveredElementAtScreen(float screenX, float screenY) {
         var local = new Matrix4f(lastDrawPose).invert().transformPosition(new Vector3f(screenX, screenY, 0));
         refreshHoveredElement(local.x, local.y);
@@ -797,7 +795,7 @@ public class ModularUI {
      * <em>that</em> one or it appears in the wrong window. Callers that have an element in hand
      * should prefer {@code element.getModularUI()}; this is the fallback for the ones that do not.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public static ModularUI active() {
         return activeUI;
@@ -807,7 +805,7 @@ public class ModularUI {
      * Marks {@code ui} as {@link #active()} until the returned scope is closed. Restores the previous
      * value rather than clearing, so nested hosts unwind correctly.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public static Scope scopedActive(@Nullable ModularUI ui) {
         var previous = activeUI;
         activeUI = ui;
@@ -824,7 +822,7 @@ public class ModularUI {
      *
      * @return true if any element handled the drop.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean onFilesDrop(List<File> files) {
         return onFilesDrop(files, UISurface.main());
     }
@@ -833,7 +831,7 @@ public class ModularUI {
      * As {@link #onFilesDrop(List)}, but against a UI that is not hosted in the game window — the
      * cursor has to be queried from that window and scaled by its own size.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean onFilesDrop(List<File> files, UISurface surface) {
         if (files.isEmpty()) return false;
         var x = new double[1];
@@ -853,7 +851,7 @@ public class ModularUI {
         return event.hasHandler;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setHoverTooltip(List<Component> tooltipTexts, ItemStack tooltipStack, @Nullable Font tooltipFont, @Nullable TooltipComponent tooltipComponent) {
         this.tooltipTexts = tooltipTexts;
         this.tooltipStack = tooltipStack;
@@ -861,7 +859,7 @@ public class ModularUI {
         this.tooltipComponent = tooltipComponent;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void cleanTooltip() {
         tooltipTexts = null;
         tooltipComponent = null;
@@ -869,13 +867,13 @@ public class ModularUI {
         tooltipStack = ItemStack.EMPTY;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public Font getTooltipFont() {
         return tooltipFont;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public ModularUIWidget getWidget() {
         if (widget == null) {
             widget = new ModularUIWidget();
@@ -891,18 +889,18 @@ public class ModularUI {
      *
      * @return true if anything handled it.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean dispatchCommand(String command) {
         return getWidget().dispatchCommand(command, lastPressedKeyCode, lastPressedScanCode, lastPressedModifiers);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public List<Rect2i> getGuiExtraAreas() {
         if (extraAreas.isEmpty()) calculateExtraAreas();
         return extraAreas;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void calculateExtraAreas() {
         extraAreas.clear();
         ui.rootElement.appendExtraAreas(extraAreas);
@@ -912,7 +910,7 @@ public class ModularUI {
      * This UI's debugger, or {@code null} if it has never had one. Creates nothing and enables
      * nothing, unlike {@link #acquireDebugger()} — so asking is never what starts a session.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Nullable
     public UIDebugger getUiDebugger() {
         return uiDebuggerCache;
@@ -925,7 +923,7 @@ public class ModularUI {
      * but wrong when a host that already exists wants to retarget itself at this UI — a floating
      * window's UI, say. That case needs the debugger, not a second host.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public UIDebugger acquireDebugger() {
         this.debugMode = true;
         if (uiDebuggerCache == null) {
@@ -942,7 +940,7 @@ public class ModularUI {
      * window of its own, which is where it stops covering the UI it inspects; see
      * {@link #setDebuggerWindowed}.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void enableDebugger(boolean debugMode) {
         if (this.debugMode == debugMode) return;
         this.debugMode = debugMode;
@@ -964,7 +962,7 @@ public class ModularUI {
      * currently owns, because a debug screen that has been retargeted elsewhere is no longer ours to
      * close.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void dismissDebugScreen() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.screen instanceof DebugScreen debugScreen && debugScreen.uiDebugger == uiDebuggerCache) {
@@ -973,7 +971,7 @@ public class ModularUI {
     }
 
     /** Whether this UI's debugger is in an OS window of its own rather than layered over the game. */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public boolean isDebuggerWindowed() {
         return UIDebuggerWindow.windowFor(this) != null;
     }
@@ -989,7 +987,7 @@ public class ModularUI {
      * <p>Requesting a window can fail (native fullscreen, a GLFW with no windowing platform), in
      * which case nothing moves and the debugger stays where it is.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setDebuggerWindowed(boolean windowed) {
         if (!debugMode || uiDebuggerCache == null || windowed == isDebuggerWindowed()) return;
         var minecraft = Minecraft.getInstance();
@@ -1012,7 +1010,7 @@ public class ModularUI {
      * acted on because it arrives from inside the toggle's own click dispatch, and switching hosts
      * reparents the whole debugger — the toggle's own great-grandparent — out from under it.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void applyPendingDebuggerHost() {
         var pending = pendingDebuggerWindowed;
         if (pending == null) return;
@@ -1025,7 +1023,7 @@ public class ModularUI {
      *
      * @see #applyPendingDebuggerHost()
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void requestDebuggerWindowed(boolean windowed) {
         pendingDebuggerWindowed = windowed;
     }
@@ -1034,14 +1032,14 @@ public class ModularUI {
      * Whether the debugger has turned the pointer into an element inspector, in which case presses on
      * this UI select rather than activate.
      */
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private boolean isPickingElements() {
         return debugMode && uiDebuggerCache != null && uiDebuggerCache.isFocusMode();
     }
 
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public class ModularUIWidget implements GuiEventListener, NarratableEntry, Renderable, IModularUIHolder {
         private long lastTick;
 

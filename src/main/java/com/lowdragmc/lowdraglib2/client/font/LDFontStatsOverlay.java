@@ -10,14 +10,14 @@ import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
 import dev.vfyjxf.taffy.style.AlignItems;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.IntSupplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.function.Supplier;
 
 /**
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * after for draw calls and layout cost, which is the only honest way to tell whether a mode helped or just
  * looks different.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class LDFontStatsOverlay implements ModularHudLayer {
     public static final LDFontStatsOverlay INSTANCE = new LDFontStatsOverlay();
 

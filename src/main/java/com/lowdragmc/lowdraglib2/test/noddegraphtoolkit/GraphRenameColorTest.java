@@ -11,8 +11,6 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.model.variable.VariableDeclarat
 import com.lowdragmc.lowdraglib2.nodegraphtookit.model.wire.WireModel;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
 /**
@@ -20,14 +18,12 @@ import org.joml.Vector2f;
  * surfaces (right-click menu, inline TextField, color popup) are user-verified; the model layer
  * lives here.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphRenameColorTest {
 
     // ------------------------------------------------------------------
     // 1. Color storage on AbstractNodeModel: setColor → getElementColor + persistence
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void abstractNodeModelColorStoragePersisted(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -67,7 +63,6 @@ public class GraphRenameColorTest {
     // 2. Renamable judgment: capability + IHasName combined
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void renamableJudgmentRespectsCapabilityAndInterface(GameTestHelper helper) {
         var graph = new TestGraph();
         var gm = graph.graphModel;
@@ -98,7 +93,6 @@ public class GraphRenameColorTest {
     // 3. SubgraphNodeModel title follows name (no more hard-coded setTitle)
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void subgraphNodeTitleFollowsName(GameTestHelper helper) {
         var graph = new TestGraph();
         var sub = graph.graphModel.createLocalSubgraphInstance();
@@ -129,7 +123,6 @@ public class GraphRenameColorTest {
     //    (Placemat already had storage; this verifies the contract uniformly)
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void colorableSettersRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var graph = new TestGraph();
@@ -158,7 +151,6 @@ public class GraphRenameColorTest {
     // 5. WireModel should be neither renamable nor colorable
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void wireIsNeitherRenamableNorColorable(GameTestHelper helper) {
         var graph = new TestGraph();
         var floatType = com.lowdragmc.lowdraglib2.nodegraphtookit.api.type.TypeHandleHelpers.fromType(Float.class);
@@ -182,7 +174,6 @@ public class GraphRenameColorTest {
     //    persistence and round-trip preserve the cleared state too.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void resetColorRestoresDefault(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         var graph = new TestGraph();

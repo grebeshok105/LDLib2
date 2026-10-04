@@ -1,9 +1,9 @@
 package com.lowdragmc.lowdraglib2.client.window;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.io.File;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ import java.util.List;
  * on {@code ModularUIWidget} hit-tests, so the hovered element has to be resolved before any pointer
  * event is dispatched.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public sealed interface OsWindowEvent {
 
     /**

@@ -1,7 +1,7 @@
 package com.lowdragmc.lowdraglib2.client.window;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
  * <p>{@code glfwWindowHint} state is process-global and sticky, so every call here starts from
  * {@link GLFW#glfwDefaultWindowHints()} — a launcher shim or another mod may have left hints set.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class OsWindowHints {
 
     private static boolean focusOnShow = true;

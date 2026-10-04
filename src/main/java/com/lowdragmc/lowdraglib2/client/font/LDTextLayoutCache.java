@@ -6,8 +6,6 @@ import net.minecraft.client.gui.font.glyphs.EmptyGlyph;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -16,6 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.function.Supplier;
 
 /**
@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  * The emit path below mirrors {@code Font.StringRenderOutput} exactly, including the dim factor for shadows,
  * the doubled draw for bold, and the z offset applied to the non shadow pass.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class LDTextLayoutCache {
     /**
      * Colour value meaning "use the colour the caller passed to draw", since style colours are 24 bit and can

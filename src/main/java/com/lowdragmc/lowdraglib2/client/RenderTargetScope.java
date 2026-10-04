@@ -3,8 +3,8 @@ package com.lowdragmc.lowdraglib2.client;
 import com.lowdragmc.lowdraglib2.utils.Scope;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GL30;
 
 /**
@@ -35,7 +35,7 @@ import org.lwjgl.opengl.GL30;
  * <p>Both values come from {@code GlStateManager}'s own mirrors rather than {@code glGetIntegerv},
  * so capturing costs nothing and never stalls the pipeline.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class RenderTargetScope implements Scope {
 
     private final int framebuffer;

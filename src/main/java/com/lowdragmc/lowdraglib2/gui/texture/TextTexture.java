@@ -9,13 +9,12 @@ import com.lowdragmc.lowdraglib2.gui.LDLibFonts;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
 import com.lowdragmc.lowdraglib2.gui.util.DrawerHelper;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import com.lowdragmc.lowdraglib2.registry.annotation.LDLRegisterClient;
 import com.lowdragmc.lowdraglib2.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Setter;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@KJSBindings
 @LDLRegisterClient(name = "text_texture", registry = "ldlib2:gui_texture")
 public class TextTexture extends TransformTexture {
 
@@ -58,7 +56,7 @@ public class TextTexture extends TransformTexture {
     public TextType type;
 
     public Supplier<String> supplier;
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private List<String> texts;
 
     private long lastTick;
@@ -93,7 +91,7 @@ public class TextTexture extends TransformTexture {
         return this;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void updateTick() {
         if (Minecraft.getInstance().level != null) {
             long tick = Minecraft.getInstance().level.getGameTime();
@@ -197,7 +195,7 @@ public class TextTexture extends TransformTexture {
         return copied;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     protected void drawInternal(GuiGraphics graphics, float mouseX, float mouseY, float x, float y, float width, float height, float partialTicks) {
         updateTick();
@@ -270,11 +268,11 @@ public class TextTexture extends TransformTexture {
      * a clip rectangle and would otherwise have to guess which surface it is drawing into.
      */
     @Nullable
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private transient GUIContext context;
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     protected void drawInternal(GUIContext context, float x, float y, float width, float height) {
         this.context = context;
         try {
@@ -284,7 +282,7 @@ public class TextTexture extends TransformTexture {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void drawRollTextLine(GuiGraphics graphics, float x, float y, float width, float height, Font fontRenderer, int textH, String line) {
         float _y = y + (height - textH) / 2f;
         float textW = fontRenderer.width(line);
@@ -311,7 +309,7 @@ public class TextTexture extends TransformTexture {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     private void drawTextLine(GuiGraphics graphics, float x, float y, float width, float height, Font fontRenderer, int textH, String line) {
         int textW = fontRenderer.width(line);
         float _x = x + (width - textW) / 2f;
@@ -319,7 +317,7 @@ public class TextTexture extends TransformTexture {
         graphics.drawString(fontRenderer, line, (int) _x, (int) _y, color, dropShadow);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public int getLines() {
         return texts.size();
     }

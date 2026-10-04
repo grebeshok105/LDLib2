@@ -9,8 +9,6 @@ import com.lowdragmc.lowdraglib2.uitest.mp.MPScenario;
 import com.lowdragmc.lowdraglib2.uitest.mp.MPScenarioBuilder;
 import com.lowdragmc.lowdraglib2.uitest.mp.MPScenarioOptions;
 import com.lowdragmc.lowdraglib2.uitest.mp.MPSegment;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.util.Set;
 
 /**
@@ -33,7 +33,7 @@ import java.util.Set;
  * That is the entire cross-process protocol from the runner's point of view — everything else
  * (screenshots, reports, timeouts, teardown, the watchdog) is the existing machinery.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 final class MPClientSession {
 
     /** Cross-process sync waits span server ticks plus two network hops; 5 s solo default is too tight. */

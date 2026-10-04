@@ -10,8 +10,6 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
 /**
@@ -20,7 +18,6 @@ import org.joml.Vector2f;
  * {@code graphClass} persistence, compatibility gating, and backward compatibility with legacy
  * (untagged) saves.
  */
-@GameTestHolder(LDLib2.MOD_ID)
 public class GraphCrossTypeSubgraphTest {
 
     // ------------------------------------------------------------------
@@ -28,7 +25,6 @@ public class GraphCrossTypeSubgraphTest {
     //    type and the outer subgraph node's ports.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void foreignLocalSubgraphRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start foreignLocalSubgraphRoundTrip");
@@ -90,7 +86,6 @@ public class GraphCrossTypeSubgraphTest {
     //    returns null. Same-type is always allowed.
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void compatibilityGating(GameTestHelper helper) {
         LDLib2.LOGGER.info("Start compatibilityGating");
 
@@ -126,7 +121,6 @@ public class GraphCrossTypeSubgraphTest {
     //    the owner's own type (legacy, pre-cross-type saves).
     // ------------------------------------------------------------------
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void legacyLocalSubgraphWithoutGraphClass(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
         LDLib2.LOGGER.info("Start legacyLocalSubgraphWithoutGraphClass");

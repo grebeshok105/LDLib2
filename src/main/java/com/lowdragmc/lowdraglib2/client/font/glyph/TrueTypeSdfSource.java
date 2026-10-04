@@ -6,8 +6,6 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.client.gui.font.providers.FreeTypeUtil;
 import net.minecraft.client.gui.font.providers.TrueTypeGlyphProviderDefinition;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -16,6 +14,8 @@ import org.lwjgl.util.freetype.FreeType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import java.nio.ByteBuffer;
 
 /**
@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
  * maps to {@code emPixels} device pixels and every metric is divided by the oversample factor to land back in
  * the 9 pixel design space, so advances stay identical to what the vanilla renderer produced.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class TrueTypeSdfSource implements GlyphSource {
     /**
      * Padding around each glyph, also the distance in pixels the field spreads over.

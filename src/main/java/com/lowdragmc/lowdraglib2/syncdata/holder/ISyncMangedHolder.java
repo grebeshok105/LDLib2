@@ -15,7 +15,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import java.util.BitSet;
 import java.util.concurrent.RejectedExecutionException;
@@ -63,7 +64,7 @@ public interface ISyncMangedHolder extends IManagedHolder, IAsyncLogic {
                     var extra = new CompoundTag();
                     writeCustomSyncData(serverLevel.registryAccess(), extra);
                     var packet = createSyncPacket(changed, data, extra);
-                    PacketDistributor.sendToPlayersTrackingChunk(serverLevel, this.getTrackingPos(), packet);
+                    PlayerLookup.tracking(serverLevel, this.getTrackingPos()).forEach(player -> ServerPlayNetworking.send(player, packet));
                 });
             } catch (RejectedExecutionException ignored) {
                 // The server can begin shutting down between the safety check and task submission.

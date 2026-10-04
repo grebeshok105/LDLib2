@@ -16,7 +16,6 @@ import com.lowdragmc.lowdraglib2.gui.ui.style.StyleOrigin;
 import com.lowdragmc.lowdraglib2.gui.ui.styletemplate.Sprites;
 import com.lowdragmc.lowdraglib2.gui.util.FileNode;
 import com.lowdragmc.lowdraglib2.gui.util.WindowDragHelper;
-import com.lowdragmc.lowdraglib2.integration.kjs.KJSBindings;
 import dev.vfyjxf.taffy.style.*;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import lombok.Setter;
@@ -35,7 +34,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@KJSBindings
 public class Dialog extends UIElement {
     /**
      * Optional features of {@link Dialog#showFileDialog}, combined with {@code |}:

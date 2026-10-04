@@ -1,11 +1,11 @@
 package com.lowdragmc.lowdraglib2.client.window;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11C;
 import org.lwjgl.opengl.GL30C;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.lwjgl.opengl.GLCapabilities;
 
 /**
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GLCapabilities;
  * <p>No vertical flip. The source texture and the window's default framebuffer are both bottom-up,
  * which is also why {@code RenderTarget#blitToScreen} does not flip either.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class OsWindowPresenter {
 
     private final OsWindow window;

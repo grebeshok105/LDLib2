@@ -4,8 +4,8 @@ import com.lowdragmc.lowdraglib2.gui.ColorPattern;
 import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.texture.Icons;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  * taken before this existed, and would put an arrow through element crops. The runner hides it for
  * the frame it is about to read; where a step aimed is recorded in the report instead.
  */
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public final class CursorOverlay {
 
     /** Rendered size in GUI pixels, and the tip's offset within it, from the arrow's own artwork. */

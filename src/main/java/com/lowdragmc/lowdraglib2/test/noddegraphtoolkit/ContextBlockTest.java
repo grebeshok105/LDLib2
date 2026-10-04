@@ -9,13 +9,10 @@ import com.lowdragmc.lowdraglib2.nodegraphtookit.model.node.CustomBlockNodeModel
 import com.lowdragmc.lowdraglib2.nodegraphtookit.gui.itemlibrary.GraphNodeCreationData;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.neoforged.neoforge.gametest.GameTestHolder;
-import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import org.joml.Vector2f;
 
 import java.util.UUID;
 
-@GameTestHolder(LDLib2.MOD_ID)
 public class ContextBlockTest {
 
     /**
@@ -23,7 +20,6 @@ public class ContextBlockTest {
      * model state (block count, parent links, indices, registration with the graph).
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void contextBlockBasicOperations(GameTestHelper helper) {
         var graph = new TestGraph();
         var graphModel = graph.graphModel;
@@ -73,7 +69,6 @@ public class ContextBlockTest {
      * rejected when inserted into a context.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void incompatibleBlockRejected(GameTestHelper helper) {
         var graph = new TestGraph();
         var graphModel = graph.graphModel;
@@ -99,7 +94,6 @@ public class ContextBlockTest {
      * links restored and port-level constants intact.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void contextBlockSerializationRoundTrip(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
@@ -165,7 +159,6 @@ public class ContextBlockTest {
      * the graph's UID map, and their parent links should be cleared.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void contextDeletionCascadesBlocks(GameTestHelper helper) {
         var graph = new TestGraph();
         var graphModel = graph.graphModel;
@@ -195,7 +188,6 @@ public class ContextBlockTest {
      * Regression for the duplicate-element-UID issue.
      */
     @GameTest(template = "empty")
-    @PrefixGameTestTemplate(false)
     public static void contextWithBlocksCopyPaste(GameTestHelper helper) {
         var provider = helper.getLevel().registryAccess();
 
