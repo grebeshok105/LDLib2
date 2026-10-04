@@ -24,12 +24,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.server.packs.PackType;
 import com.lowdragmc.lowdraglib2.editor.resource.PackResourceManager;
 import com.lowdragmc.lowdraglib2.gui.factory.LDMenuTypes;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
 import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
+import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUIClientElementComponent;
+import com.lowdragmc.lowdraglib2.gui.ui.utils.ModularUITooltipComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -50,6 +53,9 @@ public class ClientProxy {
         MenuScreens.register(LDMenuTypes.PLAYER_UI, ModularUIContainerScreen::new);
         MenuScreens.register(LDMenuTypes.HELD_ITEM_UI, ModularUIContainerScreen::new);
         MenuScreens.register(LDMenuTypes.BLOCK_UI, ModularUIContainerScreen::new);
+
+        // fabric equivalent of NeoForge's RegisterClientTooltipComponentFactoriesEvent
+        TooltipComponentCallback.EVENT.register(c -> c instanceof ModularUITooltipComponent m ? new ModularUIClientElementComponent(m) : null);
 
         // Register Entity Renderers
         if (Platform.isDevEnv() && CommonProxy.TEST_BE_TYPE != null) {
