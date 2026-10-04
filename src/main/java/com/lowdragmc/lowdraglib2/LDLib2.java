@@ -2,7 +2,6 @@ package com.lowdragmc.lowdraglib2;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.RandomSource;
 import net.minecraft.resources.ResourceLocation;
 import com.lowdragmc.lowdraglib2.client.ClientProxy;
@@ -93,7 +92,12 @@ public class LDLib2 implements ModInitializer {
     }
 
     public static boolean isServer() {
-        return FabricLoader.getInstance().getEnvironmentType() == net.fabricmc.api.EnvType.SERVER;
+        if (!isClient()) return true;
+        var server = Platform.getMinecraftServer();
+        if (server != null) {
+            return server.isSameThread();
+        }
+        return false;
     }
 
     public static boolean isModLoaded(String mod) {
